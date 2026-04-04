@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystical Shop • OLN4PEACE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: url('{% static "images/Newbackground.jpeg" %}') center/cover fixed; }
+        .cosmic-card { background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="max-w-5xl mx-auto px-6 py-16">
+        <a href="/main/" class="text-emerald-400 hover:text-emerald-300 text-lg">← Back to Sanctuary</a>
+        <h1 class="text-5xl font-black text-rose-400 text-center my-12">Mystical Shop</h1>
+        <div class="grid md:grid-cols-3 gap-8">
+            {% for p in products %}
+            <div class="cosmic-card rounded-3xl p-10 text-center">
+                {% if p.image %}<img src="{{ p.image.url }}" class="mx-auto rounded-2xl mb-6">{% endif %}
+                <h3 class="text-3xl font-medium">{{ p.name }}</h3>
+                <p class="text-4xl font-bold text-emerald-400 mt-6">KSh {{ p.price }}</p>
+                <button onclick="alert('Added to cart ✨ — Stripe ready when you activate it')" class="mt-10 w-full py-5 bg-gradient-to-r from-rose-500 to-orange-400 text-black font-bold rounded-2xl">Add to Cart 💎</button>
+            </div>
+            {% empty %}
+            <p class="col-span-3 text-yellow-300 text-center text-2xl py-12">Shop empty — add products in Admin</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

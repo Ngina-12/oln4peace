@@ -1,0 +1,19 @@
+# Node.js / Frontend
+node_modules/
+.next/
+dist/
+build/
+*.log
+.env.local
+.env
+
+# Python / Backend (if you have any)
+__pycache__/
+venv/
+*.pyc
+.env
+
+# General junk
+.DS_Store
+Thumbs.db
+*.tmp

@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}One Love Nation • OLN4PEACE{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background: #0a0a1f; color: white; }
+        .star-bg { background: radial-gradient(circle, #1a1a3a 0%, #000 80%); }
+        .cosmic-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .cosmic-card:hover {
+            transform: scale(1.05) translateY(-8px);
+            box-shadow: 0 0 50px rgb(16 185 129);
+        }
+    </style>
+</head>
+<body class="star-bg min-h-screen">
+
+    <!-- Cosmic Navigation -->
+    <nav class="bg-black/60 backdrop-blur-lg border-b border-emerald-900/50 py-5 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
+            <a href="/main/" class="flex items-center gap-3 text-3xl font-black text-emerald-400 tracking-widest">
+                🌌 OLN4PEACE
+            </a>
+            <div class="flex gap-8 text-lg font-medium">
+                <a href="/main/" class="hover:text-emerald-300 transition-colors">Sanctuary Hub</a>
+                <a href="/radio/" class="hover:text-emerald-300 transition-colors">Radio</a>
+                <a href="/workbooks/" class="hover:text-emerald-300 transition-colors">Workbooks</a>
+                <a href="/teachings/" class="hover:text-emerald-300 transition-colors">Teachings</a>
+                <a href="/shop/" class="hover:text-emerald-300 transition-colors">Shop</a>
+                <a href="/about/" class="hover:text-emerald-300 transition-colors">About</a>
+                <a href="/community/" class="hover:text-emerald-300 transition-colors">Community</a>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <!-- Footer -->
+    <footer class="mt-auto py-12 text-center border-t border-emerald-900/30 bg-black/70">
+        <p class="text-yellow-300/70 text-sm tracking-widest">© 2026 One Love Nation • All things onelovenation </p>
+    </footer>
+
+</body>
+</html>

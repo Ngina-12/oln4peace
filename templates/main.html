@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Love Nation • The Adventures</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* SECTION 1 */
+        .section-1 {
+            background: url('{% static "images/Newbackground.jpeg" %}') center top / cover no-repeat;
+            min-height: 115vh;
+            position: relative;
+            padding-bottom: 60px;
+        }
+
+        /* WORDART TITLE - exact style you sent */
+        .title-wordart {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-top: 40px;
+        }
+        .word {
+            font-family: Impact, Arial Black, sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            position: relative;
+        }
+        /* RED GEM STYLE (oln + PEACE) */
+        .word.oln,
+        .word.peace {
+            font-size: 64px;
+            color: #ff1a1a;
+            background: linear-gradient(to bottom, #ff4d4d 0%, #cc0000 40%, #990000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow:
+                0 0 2px #fff,
+                0 0 4px gold,
+                0 0 8px gold,
+                2px 2px 0 #b8860b,
+                3px 3px 0 #8b6508,
+                4px 4px 6px rgba(0,0,0,0.8);
+        }
+        /* GOLD NUMBER */
+        .word.four {
+            font-size: 90px;
+            background: linear-gradient(to bottom, #fff6b0 0%, #ffd700 30%, #ffb300 60%, #cc8400 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow:
+                0 0 6px gold,
+                0 0 12px orange,
+                2px 2px 0 #b8860b,
+                3px 3px 0 #8b6508,
+                5px 5px 10px rgba(0,0,0,0.9);
+        }
+        /* .ORG GOLD STYLE */
+        .word.org {
+            font-size: 48px;
+            background: linear-gradient(to bottom, #fff6b0, #ffd700, #cc8400);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow:
+                0 0 4px gold,
+                2px 2px 0 #b8860b,
+                3px 3px 6px rgba(0,0,0,0.8);
+        }
+
+        /* Golden frames */
+        .media-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .frame {
+            padding: 8px;
+            background: linear-gradient(45deg, gold, #b8860b);
+            border-radius: 8px;
+            box-shadow: 0 0 15px gold;
+        }
+        .frame img,
+        .frame video {
+            width: 280px;
+            height: 170px;
+            object-fit: cover;
+            border-radius: 4px;
+            display: block;
+        }
+
+        /* Congratulations text */
+        .message-display {
+            max-width: 750px;
+            margin: 20px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            font-size: 17px;
+            text-align: center;
+        }
+        .golden-glow {
+            background: linear-gradient(180deg, #facc15, #eab308, #facc15);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px #facc15, 0 0 30px #facc15, 0 0 50px #eab308, 0 0 80px #facc15;
+            font-family: 'Cinzel', serif;
+        }
+
+        /* SECTION 2 */
+        .section-2 {
+            background: radial-gradient(circle at top, #1a0033, black 70%);
+            padding: 80px 20px 120px;
+        }
+
+        .portal-header {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 40px;
+            color: gold;
+        }
+
+        /* Stacked gems */
+        .gems-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .gem-button {
+            height: 130px;
+            width: 100%;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: block;
+        }
+        .gem-button:hover { transform: scale(1.04); }
+    </style>
+</head>
+<body>
+
+    <!-- ====================== SECTION 1 ====================== -->
+    <section class="section-1">
+
+        <!-- WordArt Title -->
+        <div class="title-wordart">
+            <span class="word oln">oln</span>
+            <span class="word four">4</span>
+            <span class="word peace">PEACE</span>
+            <span class="word org">.org</span>
+        </div>
+
+        <!-- Golden frames -->
+        <div class="media-grid">
+            <div class="frame">
+                <img src="{% static 'images/photo-left.jpg' %}" loading="lazy" alt="OLN Photo">
+            </div>
+            <div class="frame">
+                <video controls poster="{% static 'images/sanctuary-bg.jpg' %}" preload="none">
+                    <source src="/media/videos/WhatsApp Video 2026-03-20 at 10.01.11.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <!-- Congratulations text -->
+        <div class="message-display">
+            <p class="golden-glow text-2xl font-bold mb-4">CONGRATULATIONS</p>
+            <p class="golden-glow">on finding your way here to our homepage.</p>
+            <p class="golden-glow"><strong>The DIVINE MAGIC DUO</strong> wholeheartedly welcome you into our world.</p>
+            <p class="golden-glow">Listen to the entire Season One of The Adventures of One Love Nation Radio Shows where OLN made it to be simple for all.</p>
+            <p class="golden-glow">Either souls were for peace, or they were not.</p>
+            <p class="golden-glow">
+                Enjoy the site.<br>
+                Unravel slowly.<br>
+                Come back as often as you like.<br>
+                Share with friends...
+            </p>
+        </div>
+    </section>
+
+    <!-- ====================== SECTION 2 ====================== -->
+    <section class="section-2">
+
+        <div class="portal-header">PORTAL IN 2</div>
+
+        <div class="gems-stack">
+            <a href="/backstory/"    class="gem-button" style="background-image: url('{% static "images/OLN Backstory.png" %}');"></a>
+            <a href="#"              class="gem-button" style="background-image: url('{% static "images/Responsetowindrush.png" %}');"></a>
+            <a href="/radio/"        class="gem-button" style="background-image: url('{% static "images/OLN Radio Shows.png" %}');"></a>
+            <a href="/books/"        class="gem-button" style="background-image: url('{% static "images/OLN Books.png" %}');"></a>
+            <a href="/workbooks/"    class="gem-button" style="background-image: url('{% static "images/OLN Companion Workbooks.png" %}');"></a>
+            <a href="/music/"        class="gem-button" style="background-image: url('{% static "images/OLN Music.png" %}');"></a>
+            <a href="/film-archive/" class="gem-button" style="background-image: url('{% static "images/OLN Film Archive.png" %}');"></a>
+            <a href="/photo-gallery/" class="gem-button" style="background-image: url('{% static "images/OLN Photo Gallery.png" %}');"></a>
+            <a href="/merangel-art/" class="gem-button" style="background-image: url('{% static "images/Merangles art gallery.png" %}');"></a>
+            <a href="/rainbows-end/" class="gem-button" style="background-image: url('{% static "images/Rainbows end.png" %}');"></a>
+            <a href="/shop/"         class="gem-button" style="background-image: url('{% static "images/Old shop.png" %}');"></a>
+        </div>
+
+    </section>
+
+    <div class="text-center text-yellow-300/60 text-sm py-8">© One Love Nation • OLN4PEACE • All things onelovenation</div>
+
+    <script>
+        function toggleDescription(el) {
+            if (el.classList.contains('active')) {
+                el.style.animation = 'slideFromLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) reverse';
+                setTimeout(() => { el.classList.remove('active'); el.style.animation = ''; }, 400);
+            } else {
+                el.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
