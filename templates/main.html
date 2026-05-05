@@ -1,0 +1,307 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>One Love Nation • The Adventures</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @font-face {
+            font-family: 'Chromium One Std';
+            src: url('{% static "fonts/Chromium One Std Regular.otf" %}') format('opentype');
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: white;
+        }
+        
+        .global-background {
+             position: fixed;
+             top: 0;
+             left: 0;
+             width: 100%;
+             height: 100%;
+             background: linear-gradient(rgba(0,0,0,0.68), rgba(0,0,0,0.68)), 
+                url('{% static "images/Newbackground.png" %}') center/cover no-repeat;
+             z-index: -1;
+             pointer-events: none;
+        }
+
+        /* ====================== FIRST SECTION ====================== */
+        .frame1-thq-frame1-elm {
+            min-height: 100vh;
+            padding: 20px 0px;
+            position: relative;
+        }
+
+        .header-frame {
+            width: 100%;
+            max-width: 1080px;
+            margin: 20px auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title-image {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .media-parent-frame {
+            width: 100%;
+            max-width: 800px;
+            margin: 40px auto 0;
+            padding: 0 20px;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        @media (min-width: 768px) {
+            .media-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .frame {
+            padding: 0px;
+            border-radius: 10px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            background-size: cover;
+            background-position: center;
+        }
+        .frame.left-frame  { background-image: url('{% static "images/image.png" %}'); }
+        .frame.right-frame { background-image: url('{% static "images/youtube.png" %}'); }
+
+        .frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .frame iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* CAROUSEL */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .carousel-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .chromium-text {
+            font-family: 'Chromium One Std', Impact, sans-serif;
+            color: #D4AF37;
+        }
+
+        .rubik-text {
+            font-family: 'Rubik One', Impact, sans-serif;
+            color: #D4AF37;
+        }
+
+        /* ====================== SECOND SECTION (PORTALS) ====================== */
+        .portal-section {
+            padding: 40px 0 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .portal-title-container { 
+            text-align: center; 
+            margin-bottom: 40px; 
+        }
+        
+        .chromium { font-family: 'Chromium One Std'; font-size: 2.8rem; color: #D4AF37; }
+        .rubik { font-family: 'Rubik One'; font-size: 0.9rem; color: #D4AF37; }
+
+        .gem-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 90px; /* Reduced from 90px since we aren't using scale anymore */
+            padding: 0 20px;
+        }
+
+        .gem-link {
+            display: block;
+            width: 100%;
+            /* THIS REPLACES SCALE: Increase this number to make all buttons bigger */
+            transform: scale(2.1);
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        /* Subtle hover effect */
+        .gem-link:hover {
+            transform: scale(1.04);
+            z-index: 10;
+        }
+
+        .gem-link img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+        }
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="global-background"></div>
+
+    <div class="frame1-thq-frame1-elm">
+        <div class="header-frame">
+            <img src="{% static 'images/titleimage.png' %}" class="title-image" alt="oln4PEACE.org">
+        </div>
+
+        <div class="media-parent-frame">
+            <div class="media-grid">
+                <div class="frame left-frame">
+                    <div class="carousel-container" id="carousel">
+                        <img src="{% static 'images/3.png' %}" class="carousel-slide active" alt="slide1">
+                        <img src="{% static 'images/1.png' %}" class="carousel-slide" alt="slide2">
+                        <img src="{% static 'images/9.png' %}" class="carousel-slide" alt="slide3">
+                        <img src="{% static 'images/7.png' %}" class="carousel-slide" alt="slide4">
+                        <img src="{% static 'images/6.png' %}" class="carousel-slide" alt="slide5">
+                        <img src="{% static 'images/5.png' %}" class="carousel-slide" alt="slide6">
+                        <img src="{% static 'images/8.png' %}" class="carousel-slide" alt="slide7">
+                        <img src="{% static 'images/2.png' %}" class="carousel-slide" alt="slide8">
+                    </div>
+                </div>
+
+                <div class="frame right-frame" onclick="window.open('https://youtu.be/DKffexpK348', '_blank')">
+                    <iframe src="https://www.youtube.com/embed/DKffexpK348?autoplay=1&mute=1&playsinline=1&start=0&end=30&controls=0&modestbranding=1&rel=0" 
+                    frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div style="max-width:1080px;margin:40px auto;padding:0 20px;text-align:center;line-height:1.45;">
+            <span class="chromium-text" style="font-size:2.4rem;display:block;margin-bottom: 0px;">CONGRATULATIONS</span>
+            <span class="rubik-text" style="font-size:1rem;margin: -15px 0 0;">on navigating your way to our homepage.</span><br><br>
+            <span class="rubik-text" style="font-size:0.9rem; display: block; margin-bottom: 0px;">The</span>
+            <span class="chromium-text" style="font-size:2.1rem; display: block; margin: -4px 0 -4px;">DIVINE MAGIC DUO</span>
+            <span class="rubik-text" style="font-size:0.90rem; display: block; margin: -5px 0 40px;">wholeheartedly welcome you into our world.</span>            
+            <span class="chromium-text" style="font-size:2.0rem; display: inline;margin:5px 0 -5px; margin-left:-5px;">LISTEN </span>
+            <span class="rubik-text" style="font-size:1.00rem; margin-left: -3px;margin-bottom: -2px;">at your leisure to the entire</span>
+            <span class="chromium-text" style="font-size:1.5rem; display: block; margin: -10px 0 -7px;">Season one<br></span>
+            <span class="rubik-text" style="font-size:0.9rem;">of</br></span>
+            <span class="rubik-text" style="font-size:1.2rem;">The Adventures of One Love Nation</span>
+            <span class="chromium-text" style="font-size:2.1rem; display: block; margin: -10px 0 -1px;">RADIO SHOW</span>
+            <span class="rubik-text" style="font-size:0.9rem; margin:-25px 0 25px;">(as aired globally in 2024 on Radio Illumini)</span>
+            <span class="rubik-text" style="font-size:1.0rem; margin: 40px 0 0px; display: block;">The Mav has promised<br>a 10 book series...</br></span>
+            <span class="chromium-text" style="font-size:2.5rem; display: block;margin: 0px -3px -5px;margin-left:-20px;">OUT NOW</span>
+            <span class="rubik-text" style="font-size:1.15rem; display: inline;margin: 20px 0 -5px;margin-left:25px;inline; vertical-align: middle;">The</span>
+            <span class="chromium-text" style="font-size:2.8rem; margin-left: 4px; margin-right: -5px;margin:0 2px 0;vertical-align: middle;">DEEP SHIFT</span>
+            <span class="rubik-text" style="font-size:1.15rem;inline; vertical-align: middle;margin-left:-5px;">Trilogy<br></span>
+
+            <span class="rubik-text" style="font-size:1.0rem; margin-top: 10px; display: inline;">We are delighted to share our</span> 
+            <span class="chromium-text" style="font-size:1.8rem;">FREE</span>
+            <span class="chromium-text" style="font-size:1.9rem; display: block;">COMPANION WORKBOOKS</span>
+            <span class="rubik-text" style="font-size: 0.9rem; display: inline;margin-top: -10px;">to assist the reader deepening into one </span> 
+            <span class="chromium-text" style="font-size:1.7rem;">SELF</span>
+        </div>
+    </div>
+
+    <div class="portal-section">
+        <div class="portal-title-container">
+            <span class="chromium">EXPLORE</span> <span class="rubik">our</span> <span class="chromium">PORTALS</span><br>
+            <span class="rubik">within the portal</span>
+        </div>
+
+        <div class="gem-stack">
+            <a href="/backstory/" class="gem-link">
+                <img src="{% static 'images/OLN Backstory.png' %}" alt="Backstory">
+            </a>
+            <a href="/response-to-windrush/" class="gem-link">
+                <img src="{% static 'images/Responsetowindrush.png' %}" alt="Windrush">
+            </a>
+            <a href="/radio-shows/" class="gem-link">
+                <img src="{% static 'images/OLN Radio Shows.png' %}" alt="Radio">
+            </a>
+            <a href="/books/" class="gem-link">
+                <img src="{% static 'images/OLN Books.png' %}" alt="Books">
+            </a>
+            <a href="/companion-workbooks/" class="gem-link">
+                <img src="{% static 'images/OLN Companion Workbooks.png' %}" alt="Workbooks">
+            </a>
+            <a href="/film_archives/" class="gem-link">
+                <img src="{% static 'images/Film Archive.png' %}" alt="Film Archives">
+            </a>
+            <a href="/music/" class="gem-link">
+                <img src="{% static 'images/OLN Music.png' %}" alt="Music">
+            </a>
+            <a href="/merangels-art/" class="gem-link">
+                <img src="{% static 'images/Merangles art gallery.png' %}" alt="Art">
+            </a>
+            <a href="/photo-gallery/" class="gem-link">
+                <img src="{% static 'images/OLN Photo Gallery.png' %}" alt="Gallery">
+            </a>
+            <a href="/rainbows-end/" class="gem-link">
+                <img src="{% static 'images/Rainbows end.png' %}" alt="Rainbows End">
+            </a>
+            <a href="/shop/" class="gem-link">
+                <img src="{% static 'images/Old shop.png' %}" alt="Shop">
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // CAROUSEL LOGIC
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        function showNextSlide() {
+            if(slides.length === 0) return;
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        setInterval(showNextSlide, 3000);
+
+        // SCROLL RESTORATION
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        });
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) {
+                const saved = sessionStorage.getItem('scrollPosition');
+                if (saved) {
+                    setTimeout(() => {
+                        window.scrollTo(0, parseInt(saved));
+                    }, 10);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

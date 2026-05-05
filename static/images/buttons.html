@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLN - Navigation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            background: #000000;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 620px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Consistent spacing between buttons */
+            align-items: center;
+        }
+        
+        .button {
+            /* We remove overflow: hidden to ensure the hover glow isn't clipped */
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .button:hover {
+            transform: scale(1.1) translateY(-5px);
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+        }
+        
+        /* === Fixed Sizing Logic === */
+        .button img {
+            /* Setting a fixed width ensures they all line up perfectly */
+            width: 350px; 
+            height: auto;
+            display: block;
+        }
+        
+        h1 {
+            color: #ffd700;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+        
+        .footer {
+            margin-top: 60px;
+            color: #666;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>OLN</h1>
+    
+    <div class="container">
+        <div class="button" onclick="alert('OLN Music clicked!')">
+            <img src="C:/Users/Administrator/oln4peace/static/images/music.svg" alt="OLN Music">
+        </div>
+        
+        <div class="button" onclick="alert('OLN Photo Gallery clicked!')">
+            <img src="C:/Users/Administrator/oln4peace/static/images/photo_gallery.svg" alt="OLN Photo Gallery">
+        </div>
+        
+        <div class="button" onclick="alert('OLN Radio Shows clicked!')">
+            <img src="C:/Users/Administrator/oln4peace/static/images/radioshows.svg" alt="OLN Radio Shows">
+        </div>
+        
+        <div class="button" onclick="alert('Response to Windrush clicked!')">
+            <img src="C:/Users/Administrator/oln4peace/static/images/Response.svg" alt="Response to Windrush">
+        </div>
+        
+        <div class="button" onclick="alert('OLN Backstory clicked!')">
+            <img src="C:/Users/Administrator/oln4peace/static/images/Backstory.svg" alt="OLN Backstory">
+        </div>
+        
+        <div class="button" onclick="alert('OLN Books clicked!')">
+            <img src="C:/Users/Administrator/oln4peace/static/images/books.svg" alt="OLN Books">
+        </div>
+        
+        <div class="button" onclick="alert('Merangle\'s Art Gallery clicked!')">
+            <img src="C:/Users/Administrator/oln4peace/static/images/Merangle's.svg" alt="Merangle's Art Gallery">
+        </div>
+        
+        <div class="button" onclick="alert('OLN Companion Workbooks clicked!')">
+            <img src="C:/Users/Administrator/oln4peace/static/images/gemworkbooks.svg" alt="OLN Companion Workbooks">
+        </div>
+        
+        <div class="button" onclick="alert('OLN Film Archives clicked!')">
+            <img src="C:/Users/Administrator/oln4peace/static/images/film_archives.svg" alt="OLN Film Archives">
+        </div>
+
+        <!-- New Shop Button Added at the End -->
+        <div class="button" onclick="alert('OLN Shop clicked!')">
+            <img src="C:/Users/Administrator/oln4peace/static/images/Old shop.svg" alt="OLN Shop">
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>OLN Navigation • Made with ✨</p>
+    </div>
+</body>
+</html>

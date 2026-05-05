@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Companion Workbooks • OLN4PEACE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Impact:wght@400;700&display=swap');
+
+        body {
+            background: url('{% static "images/companionbackground.png" %}') center/cover fixed;
+            min-height: 100vh;
+            color: white;
+            font-family: 'Impact', system-ui, sans-serif;
+        }
+
+        .cosmic-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .workbook-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #c4d0ff;
+        }
+
+        .header-image {
+            max-width: 100%;
+            border: 12px solid #fff;
+            box-shadow: 0 0 60px rgba(180, 100, 255, 0.6);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <div class="max-w-6xl mx-auto px-6 py-12">
+        
+        <!-- Back button -->
+        <a href="/main/" class="text-emerald-400 hover:text-emerald-300 text-lg inline-flex items-center gap-2">
+            ← Back to Sanctuary
+        </a>
+
+        <!-- Header Image (exactly as in your design) -->
+        <div class="my-12 flex justify-center">
+            <img src="{% static 'images/companionpageheader.png' %}" alt="OLN Companion Workbooks Header" class="header-image rounded-3xl">
+        </div>
+
+        <h1 class="text-6xl font-black text-center tracking-widest mb-16 text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-cyan-300">
+            OLN COMPANION WORKBOOKS
+        </h1>
+
+        <div class="space-y-24">
+
+            <!-- Workbook 1 -->
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <img src="{% static 'images/thegrandremonstance.png' %}" alt="The Grand Remonstrance" class="cosmic-card rounded-3xl shadow-2xl">
+                </div>
+                <div class="workbook-text">
+                    A small Black boy, around 8 years old, with deep brown skin and a short afro hairstyle. He has large, expressive eyes full of curiosity and quiet confidence. He is wearing an oversized claret and sky blue football jersey inspired by Aston Villa FC, with matching shorts. The jersey slightly drapes over his small frame, moving naturally with his body.
+                </div>
+            </div>
+
+            <!-- Workbook 2 -->
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="md:order-2">
+                    <img src="{% static 'images/wereoutout.png' %}" alt="We're Out Out" class="cosmic-card rounded-3xl shadow-2xl">
+                </div>
+                <div class="workbook-text md:order-1">
+                    A small Black boy, around 8 years old, with deep brown skin and a short afro hairstyle. He has large, expressive eyes full of curiosity and quiet confidence. He is wearing an oversized claret and sky blue football jersey inspired by Aston Villa FC, with matching shorts. The jersey slightly drapes over his small frame, moving naturally with his body.
+                </div>
+            </div>
+
+            <!-- Workbook 3 -->
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <img src="{% static 'images/theabsoluteendofevil.png' %}" alt="The Absolute End of Evil" class="cosmic-card rounded-3xl shadow-2xl">
+                </div>
+                <div class="workbook-text">
+                    A small Black boy, around 8 years old, with deep brown skin and a short afro hairstyle. He has large, expressive eyes full of curiosity and quiet confidence. He is wearing an oversized claret and sky blue football jersey inspired by Aston Villa FC, with matching shorts. The jersey slightly drapes over his small frame, moving naturally with his body.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom CTA (exactly as in the design) -->
+        <div class="mt-20 text-center">
+            <p class="text-2xl font-medium tracking-widest text-cyan-200">
+                SIGN UP TO OUR MAILING LIST FOR FREE PDFs.
+            </p>
+            <a href="#" class="mt-6 inline-block px-10 py-5 bg-white text-black font-bold rounded-3xl text-xl hover:scale-105 transition">
+                JOIN THE MAILING LIST →
+            </a>
+        </div>
+
+    </div>
+</body>
+</html>

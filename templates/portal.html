@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLN4PEACE • Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { 
+            overflow: hidden; 
+            margin: 0;
+            padding: 0;
+            background: #000;
+        }
+        
+        /* Pond ripple */
+        .pond {
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 38%;
+            overflow: hidden; 
+            pointer-events: none;
+        }
+        .pond::after {
+            content: ''; 
+            position: absolute; 
+            inset: 0;
+            background: radial-gradient(circle at 50% 80%, rgba(255,255,255,0.25) 10%, transparent 60%);
+            animation: waterRipple 7s linear infinite;
+        }
+        @keyframes waterRipple { 
+            0% { transform: scale(1) translateY(0); opacity: 0.7; } 
+            100% { transform: scale(3) translateY(80px); opacity: 0; } 
+        }
+    </style>
+</head>
+<body class="relative h-screen w-screen">
+
+    <!-- NEW BACKGROUND - fills screen perfectly on desktop & mobile -->
+    <img src="{% static 'images/portal.jpg' %}" 
+         class="absolute inset-0 w-full h-full object-cover z-[-1]">
+
+    <!-- Invisible clickable area over the embedded "portal in 2" -->
+    <!-- Adjusted for the new image layout -->
+    <div onclick="enterPortal()" 
+         class="absolute bottom-[37%] left-1/2 -translate-x-1/2 w-[290px] h-[105px] cursor-pointer z-30"></div>
+
+    <!-- Pond ripple -->
+    <div class="pond"></div>
+
+    <script>
+        function enterPortal() {
+            document.body.style.transition = "all 1.8s cubic-bezier(0.4, 0, 0.2, 1)";
+            document.body.style.opacity = "0";
+            document.body.style.transform = "scale(0.92)";
+            setTimeout(() => { 
+                window.location.href = "/main"; 
+            }, 1600);
+        }
+    </script>
+</body>
+</html>

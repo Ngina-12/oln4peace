@@ -1,0 +1,333 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLN Companion Workbooks</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0b1a3a;
+            --accent-blue: #5588ff;
+            --dashboard-bg: rgba(255, 255, 255, 0.05);
+            --text-color: #ffffff;
+            --overlay-bg: rgba(0, 5, 15, 0.98);
+        }
+
+        body { 
+            margin: 0; 
+            background-color: var(--bg-color); 
+            display: flex; 
+            justify-content: center; 
+            font-family: 'Segoe UI', sans-serif; 
+        }
+        .page-container { position: relative; width: 100%; max-width: 900px; margin: 0 auto; }
+        .base-design { display: block; width: 100%; height: auto; }
+
+        .hotspot { 
+            position: absolute; 
+            cursor: pointer; 
+            background: rgba(0,0,0,0.05); 
+            z-index: 10; 
+            border: 2px solid transparent;
+            transition: border 0.2s;
+        }
+        .hotspot:hover { border-color: rgba(85, 136, 255, 0.4); }
+
+        #book1 { top: 24%; left: 6.5%; width: 24%; height: 22%; }
+        #book2 { top: 50%; left: 6.5%; width: 24%; height: 22%; }
+        #book3 { top: 74%; left: 6.5%; width: 24%; height: 22%; }
+
+        #reader-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay-bg); display: none; z-index: 1000;
+        }
+
+        #reader-overlay.light-mode {
+            --overlay-bg: #f0f2f5;
+            --dashboard-bg: #ffffff;
+            --text-color: #1a1a2e;
+            --accent-blue: #2e5fd4;
+        }
+
+        .reader-container { 
+            display: flex; 
+            height: 100%; 
+            position: relative; 
+            overflow: hidden;
+        }
+
+        .reader-dashboard {
+            width: 200px; 
+            min-width: 200px; 
+            background: var(--dashboard-bg);
+            border-right: 1px solid var(--accent-blue); 
+            padding: 15px 10px; 
+            overflow-y: auto;
+            font-size: 0.82rem;
+            transition: all 0.3s ease;
+        }
+        .reader-dashboard.collapsed { 
+            width: 0; 
+            min-width: 0; 
+            padding: 0; 
+            overflow: hidden; 
+            opacity: 0; 
+        }
+
+        #sidebar-toggle {
+            position: absolute; top: 50%; left: 200px; transform: translateY(-50%);
+            width: 18px; height: 48px; background: var(--accent-blue);
+            border-radius: 0 6px 6px 0; cursor: pointer; z-index: 20;
+            display: flex; align-items: center; justify-content: center;
+            transition: left 0.3s;
+        }
+        #sidebar-toggle.collapsed { left: 0; }
+
+        .theme-toggle {
+            margin-bottom: 16px; padding: 6px 10px; cursor: pointer;
+            border: 1px solid rgba(85, 136, 255, 0.4); color: var(--accent-blue);
+            text-align: center; border-radius: 4px; font-size: 0.73rem;
+            background: transparent;
+        }
+        .theme-toggle:hover { background: rgba(85, 136, 255, 0.1); }
+
+        #reader-title { font-size: 0.95rem; margin: 0 0 12px; color: var(--text-color); }
+
+        .chapter-label { 
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; 
+            text-transform: uppercase; color: var(--accent-blue); margin: 18px 0 8px 4px; 
+        }
+
+        .chapter-link {
+            padding: 9px 8px; margin: 4px 0; background: rgba(128,128,128,0.08);
+            cursor: pointer; border-radius: 4px; transition: all 0.2s;
+        }
+        .chapter-link:hover { background: var(--accent-blue); color: #fff; }
+        .chapter-link strong { font-size: 0.82rem; display: block; }
+        .chapter-link small { font-size: 0.7rem; opacity: 0.7; display: block; margin-top: 3px; }
+
+        #continue-btn {
+            background: var(--accent-blue);
+            color: white;
+            padding: 10px 12px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            display: none;
+        }
+        #continue-btn:hover { background: #3366dd; }
+
+        /* ==================== MAIN READING AREA ==================== */
+        .reader-content { 
+            flex: 1; 
+            overflow-y: auto; 
+            background: #1a1a1a; 
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pdf-page {
+            max-width: 920px;           /* Wider pages */
+            width: 100%;
+            margin-bottom: 60px;
+            padding: 55px 65px;         /* Good inner padding */
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background: #1f1f1f;
+            color: #e0e0e0;
+            line-height: 1.85;
+            font-size: 1.08rem;
+        }
+
+        /* Light Mode */
+        #reader-overlay.light-mode .pdf-page {
+            background: #ffffff;
+            color: #1a1a1a;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .close-btn {
+            position: absolute; top: 12px; right: 20px; font-size: 2.4rem;
+            cursor: pointer; color: var(--accent-blue); z-index: 1001;
+        }
+
+        /* When sidebar is collapsed, give even more space */
+        .reader-dashboard.collapsed + #sidebar-toggle + .reader-content {
+            padding: 30px 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-container">
+        <img src="{% static 'images/workbooks.svg' %}" alt="Workbooks" class="base-design">
+
+        {% for workbook in companion_workbooks|slice:":3" %}
+        <div id="book{{ forloop.counter }}" class="hotspot" 
+             onclick="openReader('{{ workbook.title|escapejs }}', '{{ workbook.pdf_file.url }}', {{ workbook.id }}, [
+                {% for chapter in workbook.chapters.all %}
+                { id: {{ chapter.id }}, title: '{{ chapter.title|escapejs }}', 
+                  start: {{ chapter.start_page }}, end: {{ chapter.end_page }} }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+             ])">
+        </div>
+        {% endfor %}
+    </div>
+
+    <div id="reader-overlay">
+        <span class="close-btn" onclick="closeReader()">&times;</span>
+        <div class="reader-container">
+            <div class="reader-dashboard" id="reader-dashboard">
+                <div class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()">☀ Light Mode</div>
+                <h2 id="reader-title">Book Title</h2>
+
+                <div id="continue-btn" onclick="continueFromLastPage()">Continue Reading</div>
+
+                <div class="chapter-label">Chapters</div>
+                <div id="chapter-list"></div>
+            </div>
+            
+            <div id="sidebar-toggle" onclick="toggleSidebar()">
+                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polyline points="6,1 1,7 6,13" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <div class="reader-content">
+                <div id="pdf-pages"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        let currentPdf = null;
+        let currentBookId = null;
+        let currentPdfUrl = null;
+        let sidebarOpen = true;
+        let isLight = false;
+
+        function toggleSidebar() {
+            const dash = document.getElementById('reader-dashboard');
+            const tab = document.getElementById('sidebar-toggle');
+            sidebarOpen = !sidebarOpen;
+            dash.classList.toggle('collapsed', !sidebarOpen);
+            tab.classList.toggle('collapsed', !sidebarOpen);
+        }
+
+        function toggleTheme() {
+            const overlay = document.getElementById('reader-overlay');
+            const btn = document.getElementById('theme-toggle-btn');
+            isLight = !isLight;
+            overlay.classList.toggle('light-mode', isLight);
+            btn.textContent = isLight ? '☽ Dark Mode' : '☀ Light Mode';
+        }
+
+        function saveProgress(bookId, pageNum) {
+            localStorage.setItem(`progress_${bookId}`, pageNum);
+        }
+
+        function getProgress(bookId) {
+            return parseInt(localStorage.getItem(`progress_${bookId}`)) || 1;
+        }
+
+        async function loadChapterPages(startPage, endPage) {
+            const pagesContainer = document.getElementById('pdf-pages');
+            pagesContainer.innerHTML = '<p style="text-align:center; padding:100px; color:#888;">Loading chapter...</p>';
+
+            try {
+                if (!currentPdf) currentPdf = await pdfjsLib.getDocument(currentPdfUrl).promise;
+
+                pagesContainer.innerHTML = '';
+                const actualEnd = Math.min(endPage, currentPdf.numPages);
+
+                for (let i = startPage; i <= actualEnd; i++) {
+                    const page = await currentPdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    
+                    let pageText = '';
+                    let lastY = null;
+
+                    textContent.items.forEach(item => {
+                        if (lastY !== null && Math.abs(lastY - item.transform[5]) > 13) pageText += '\n\n';
+                        pageText += item.str + ' ';
+                        lastY = item.transform[5];
+                    });
+
+                    const pageDiv = document.createElement('div');
+                    pageDiv.id = `page-${i}`;
+                    pageDiv.className = 'pdf-page';
+                    pageDiv.innerHTML = `
+                        <div style="text-align:center; margin-bottom:30px; color:#999; font-size:0.95rem;">
+                            Page ${i}
+                        </div>
+                        <div style="white-space: pre-wrap;">${pageText.trim()}</div>
+                    `;
+                    pagesContainer.appendChild(pageDiv);
+                }
+            } catch (err) {
+                console.error(err);
+                pagesContainer.innerHTML = `<p style="color:red; text-align:center; padding:100px;">Failed to load chapter.</p>`;
+            }
+        }
+
+        function continueFromLastPage() {
+            const savedPage = getProgress(currentBookId);
+            if (savedPage > 1) loadChapterPages(savedPage, 999);
+        }
+
+        async function openReader(title, pdfUrl, bookId, chapters) {
+            currentBookId = bookId;
+            currentPdfUrl = pdfUrl;
+            document.getElementById('reader-title').innerText = title;
+
+            const savedPage = getProgress(bookId);
+            const continueBtn = document.getElementById('continue-btn');
+            continueBtn.style.display = savedPage > 1 ? 'block' : 'none';
+
+            // Load first chapter
+            if (chapters.length > 0) {
+                const first = chapters[0];
+                loadChapterPages(first.start, first.end);
+            }
+
+            // Populate Chapters
+            const list = document.getElementById('chapter-list');
+            list.innerHTML = '';
+            chapters.forEach((ch, idx) => {
+                const div = document.createElement('div');
+                div.className = 'chapter-link';
+                div.innerHTML = `
+                    <strong>${idx + 1}. ${ch.title}</strong>
+                    <small>Pages ${ch.start} – ${ch.end}</small>`;
+                div.onclick = () => {
+                    loadChapterPages(ch.start, ch.end);
+                    saveProgress(bookId, ch.start);
+                    document.getElementById('continue-btn').style.display = 'none';
+                };
+                list.appendChild(div);
+            });
+
+            sidebarOpen = true;
+            document.getElementById('reader-dashboard').classList.remove('collapsed');
+            document.getElementById('sidebar-toggle').classList.remove('collapsed');
+
+            document.getElementById('reader-overlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeReader() {
+            document.getElementById('reader-overlay').style.display = 'none';
+            document.getElementById('pdf-pages').innerHTML = '';
+            document.getElementById('continue-btn').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+</html>

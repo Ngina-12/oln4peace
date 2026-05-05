@@ -1,0 +1,305 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radio Shows • OLN4PEACE</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        html, body {
+            height: 100%;
+            background-color: #000;
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+
+        .scroll-container {
+            height: 100dvh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .scroll-container::-webkit-scrollbar { 
+            display: none; 
+        }
+
+        .page-section {
+            height: 100dvh;
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            position: relative;
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+        }
+
+        /* Background SVGs */
+        .page-1 { background-image: url('{% static "images/showspage1.svg" %}'); }
+        .page-2 { background-image: url('{% static "images/showspage2.svg" %}'); }
+        .page-3 { background-image: url('{% static "images/showspage3.svg" %}'); }
+        .page-4 { background-image: url('{% static "images/showspage4.svg" %}'); }
+        .page-5 { background-image: url('{% static "images/showspage5.svg" %}'); }
+
+        /* HOTSPOTS */
+        .audio-hotspot {
+            position: absolute;
+            width: 78%;
+            left: 11%;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            z-index: 10;
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.06);
+        }
+
+        /* Precise positioning matching your SVG design */
+        .pos-p1-s1 { top: 50.8%; }
+        .pos-p1-s2 { top: 76.8%; }
+
+        .pos-p5-s1 { top: 7.8%; }
+        .pos-p5-s2 { top: 35.2%; }
+
+        .pos-top    { top: 10.8%; }
+        .pos-mid    { top: 40.8%; }
+        .pos-bottom { top: 70.4%; }
+
+        .play-btn {
+            width: 44px;
+            height: 44px;
+            background: #c1ff72;
+            border: 2.5px solid #106b0b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #106b0b;
+            font-size: 1.2rem;
+            transition: transform 0.1s;
+            flex-shrink: 0;
+            padding-left: 2px;
+        }
+        .play-btn:active { 
+            transform: scale(0.92); 
+        }
+
+        .waveform-canvas {
+            flex: 1;
+            height: 42px;
+            cursor: pointer;
+            image-rendering: crisp-edges;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scroll-container">
+        
+        <!-- PAGE 1 -->
+        <section class="page-section page-1">
+            {% for audio in audios|slice:":1" %}
+            <div class="audio-hotspot pos-p1-s1">
+                <button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button>
+                <canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas>
+                <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio>
+            </div>
+            {% endfor %}
+
+            {% for audio in audios|slice:"1:2" %}
+            <div class="audio-hotspot pos-p1-s2">
+                <button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button>
+                <canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas>
+                <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio>
+            </div>
+            {% endfor %}
+        </section>
+
+        <!-- PAGE 2 -->
+        <section class="page-section page-2">
+            {% for audio in audios|slice:"2:3" %}
+            <div class="audio-hotspot pos-top">
+                <button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button>
+                <canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas>
+                <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio>
+            </div>
+            {% endfor %}
+
+            {% for audio in audios|slice:"3:4" %}
+            <div class="audio-hotspot pos-mid">
+                <button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button>
+                <canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas>
+                <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio>
+            </div>
+            {% endfor %}
+
+            {% for audio in audios|slice:"4:5" %}
+            <div class="audio-hotspot pos-bottom">
+                <button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button>
+                <canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas>
+                <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio>
+            </div>
+            {% endfor %}
+        </section>
+
+        <!-- PAGE 3, 4, 5 remain the same structure -->
+        <section class="page-section page-3">
+            {% for audio in audios|slice:"5:6" %}<div class="audio-hotspot pos-top"><button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button><canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas><audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio></div>{% endfor %}
+            {% for audio in audios|slice:"6:7" %}<div class="audio-hotspot pos-mid"><button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button><canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas><audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio></div>{% endfor %}
+            {% for audio in audios|slice:"7:8" %}<div class="audio-hotspot pos-bottom"><button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button><canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas><audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio></div>{% endfor %}
+        </section>
+
+        <section class="page-section page-4">
+            {% for audio in audios|slice:"8:9" %}<div class="audio-hotspot pos-top"><button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button><canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas><audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio></div>{% endfor %}
+            {% for audio in audios|slice:"9:10" %}<div class="audio-hotspot pos-mid"><button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button><canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas><audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio></div>{% endfor %}
+            {% for audio in audios|slice:"10:11" %}<div class="audio-hotspot pos-bottom"><button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button><canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas><audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio></div>{% endfor %}
+        </section>
+
+        <section class="page-section page-5">
+            {% for audio in audios|slice:"11:12" %}
+            <div class="audio-hotspot pos-p5-s1">
+                <button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button>
+                <canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas>
+                <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio>
+            </div>
+            {% endfor %}
+
+            {% for audio in audios|slice:"12:13" %}
+            <div class="audio-hotspot pos-p5-s2">
+                <button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button>
+                <canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas>
+                <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}"></audio>
+            </div>
+            {% endfor %}
+        </section>
+
+    </div>
+
+    <script>
+        const BAR_COLOR = '#106b0b';
+        const PROGRESS_COLOR = '#c1ff72';
+
+        function drawWaveform(canvas, progress = 0) {
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+
+            const w = rect.width;
+            const h = rect.height;
+            const barWidth = 3.8;
+            const gap = 2.4;
+            const barCount = Math.floor(w / (barWidth + gap));
+
+            ctx.clearRect(0, 0, w, h);
+
+            for (let i = 0; i < barCount; i++) {
+                const x = i * (barWidth + gap);
+                // More natural looking waveform
+                const amp = Math.sin(i * 0.42) * 0.25 + Math.cos(i * 0.18) * 0.2 + 0.65;
+                const barHeight = h * amp * 0.78;
+                const y = (h - barHeight) / 2;
+
+                ctx.fillStyle = (i / barCount < progress) ? PROGRESS_COLOR : BAR_COLOR;
+                
+                ctx.beginPath();
+                if (ctx.roundRect) {
+                    ctx.roundRect(x, y, barWidth, barHeight, 3);
+                } else {
+                    ctx.rect(x, y, barWidth, barHeight);
+                }
+                ctx.fill();
+            }
+        }
+
+        function togglePlay(btn, audioId) {
+            const audio = document.getElementById(audioId);
+            const canvas = btn.nextElementSibling;
+
+            // Pause all other audios
+            document.querySelectorAll('audio').forEach(a => {
+                if (a.id !== audioId) {
+                    a.pause();
+                    const otherBtn = a.parentElement.querySelector('.play-btn');
+                    if (otherBtn) otherBtn.textContent = '▶';
+                }
+            });
+
+            if (audio.paused) {
+                audio.play().then(() => {
+                    btn.textContent = '⏸';
+                    animateWaveform(audio, canvas);
+                });
+            } else {
+                audio.pause();
+                btn.textContent = '▶';
+            }
+        }
+
+        function animateWaveform(audio, canvas) {
+            if (!audio.paused && !audio.ended) {
+                const progress = audio.currentTime / audio.duration || 0;
+                drawWaveform(canvas, progress);
+                requestAnimationFrame(() => animateWaveform(audio, canvas));
+            } else if (audio.ended) {
+                const btn = audio.parentElement.querySelector('.play-btn');
+                if (btn) btn.textContent = '▶';
+            }
+        }
+
+        // Seeking functionality
+        function addSeeking() {
+            document.querySelectorAll('.waveform-canvas').forEach(canvas => {
+                canvas.addEventListener('click', function(e) {
+                    const audioId = this.getAttribute('data-id');
+                    const audio = document.getElementById(`audio-${audioId}`);
+                    if (!audio || !audio.duration) return;
+
+                    const rect = this.getBoundingClientRect();
+                    const clickPercent = (e.clientX - rect.left) / rect.width;
+                    audio.currentTime = clickPercent * audio.duration;
+                });
+            });
+        }
+
+        // Initialize everything
+        window.onload = () => {
+            // Draw initial waveforms
+            document.querySelectorAll('.waveform-canvas').forEach(canvas => {
+                drawWaveform(canvas, 0);
+            });
+
+            addSeeking();
+        };
+
+        // Redraw on resize
+        window.addEventListener('resize', () => {
+            document.querySelectorAll('.waveform-canvas').forEach(canvas => {
+                const audio = document.getElementById(`audio-${canvas.getAttribute('data-id')}`);
+                const progress = audio ? (audio.currentTime / audio.duration || 0) : 0;
+                drawWaveform(canvas, progress);
+            });
+        });
+    </script>
+</body>
+</html>

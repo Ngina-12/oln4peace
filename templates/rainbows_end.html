@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow's End • One Love Nation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ── Only the font needed for the paragraph text ── */
+        @font-face {
+            font-family: 'GreatVibes';
+            src: url('{% static "Fonts/GreatVibes-Regular.ttf" %}') format('truetype');
+            font-weight: normal;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            /* Using the new background image with the title baked in */
+            background: url("{% static 'images/rainbowsbackground.jpeg' %}") center/cover fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Centers the content area vertically */
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ── Back link ── */
+        .back-link {
+            position: absolute;
+            top: 1rem;
+            left: 1.2rem;
+            color: #ffe066;
+            font-size: 1.1rem;
+            text-decoration: none;
+            font-family: sans-serif;
+            text-shadow: 0 0 8px rgba(0,0,0,0.6);
+            z-index: 10;
+        }
+
+        /* ── Content / paragraph area ── */
+        .content-area {
+            width: 100%;
+            max-width: 700px;
+            padding: 2rem 2.5rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            /* Pushes the text slightly down to perfectly align with the starburst center */
+            margin-top: 10vh; 
+        }
+
+        .paragraph-text {
+            font-family: 'GreatVibes', cursive;
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: #000000;
+            line-height: 1.7;
+            /* Keeps the white glow so black text pops against the yellow background */
+            text-shadow: 
+                0 0 10px rgba(255,255,255,0.9), 
+                0 0 20px rgba(255,255,255,0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <a href="/main/" class="back-link">← </a>
+
+    <div class="content-area">
+        <p class="paragraph-text">
+            
+        </p>
+    </div>
+
+</body>
+</html>

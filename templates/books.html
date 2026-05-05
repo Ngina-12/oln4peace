@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLN Books • One Love Nation</title>
+    <style>
+        :root {
+            --hotspot-hover: rgba(254, 223, 16, 0.2);
+            --glow-color: #fedf10;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #010411;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .page-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .base-image {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .hotspot {
+            position: absolute;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0);
+            border-radius: 999px;
+            transition: background 0.3s, box-shadow 0.3s;
+            z-index: 10;
+        }
+
+        .hotspot:hover {
+            background: var(--hotspot-hover);
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+
+        #trilogy-buy { top: 50.1%; left: 12.8%; width: 18.5%; height: 3.3%; }
+
+        #audiobooks-link { 
+            top: 43.3%; left: 68.3%; width: 17.5%; height: 9.8%; 
+            border-radius: 12px;
+        }
+
+        #book1-buy { top: 83.6%; left: 18.2%; width: 12%; height: 2.3%; }
+        #book2-buy { top: 83.6%; left: 44%; width: 12%; height: 2.3%; }
+        #book3-buy { top: 83.6%; left: 69.8%; width: 12%; height: 2.3%; }
+
+        .sr-only {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper">
+        <img src="{% static 'images/3_20260421_165042_0000.png' %}" alt="OLN Books Library" class="base-image">
+
+        <a href="{% url 'shop' %}" id="trilogy-buy" class="hotspot">
+            <span class="sr-only">Buy The Deep Shift Trilogy</span>
+        </a>
+
+        <!-- Updated: Now links to Kindle -->
+        <a href="https://www.amazon.com/kindle" id="audiobooks-link" class="hotspot" target="_blank" rel="noopener">
+            <span class="sr-only">Buy on Kindle</span>
+        </a>
+
+        <a href="{% url 'shop' %}" id="book1-buy" class="hotspot">
+            <span class="sr-only">Buy The Grand Remonstrance</span>
+        </a>
+
+        <a href="{% url 'shop' %}" id="book2-buy" class="hotspot">
+            <span class="sr-only">Buy We're Out Out</span>
+        </a>
+
+        <a href="{% url 'shop' %}" id="book3-buy" class="hotspot">
+            <span class="sr-only">Buy The Absolute End of Evil</span>
+        </a>
+    </div>
+
+</body>
+</html>

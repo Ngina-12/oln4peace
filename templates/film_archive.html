@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLN Film Archives • One Love Nation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Apply the new background and keep it fixed to avoid stretching when scrolling */
+        body { 
+            background: url('{% static "images/OLNfilm.svg" %}') center top/cover fixed no-repeat; 
+            background-color: #12002b; /* Dark purple fallback */
+        }
+        
+        /* Custom screen positioning for the video inside the TV */
+        /* Adjust these percentages slightly if the video doesn't perfectly align with the screen */
+        .tv-screen-hotspot {
+            position: absolute;
+            top: 21%;
+            left: 11%;
+            width: 61%;
+            height: 56%;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white py-8">
+    <div class="max-w-5xl mx-auto px-6 relative z-30">
+        <a href="/main/" class="text-yellow-300 text-lg font-semibold hover:underline drop-shadow-md relative z-50">←</a>
+        
+        <div class="mt-56 flex flex-col items-center gap-20 pb-24">
+
+            <div class="relative w-full max-w-3xl drop-shadow-2xl hover:scale-[1.02] transition-transform duration-300">
+                <img src="{% static 'images/OLNfilmtv.svg' %}" alt="OLN TV Container" class="w-full relative z-10 pointer-events-none">
+                
+                <div class="tv-screen-hotspot">
+                    <iframe class="w-full h-full rounded-lg" 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="relative w-full max-w-3xl drop-shadow-2xl hover:scale-[1.02] transition-transform duration-300">
+                <img src="{% static 'images/OLNfilmtv.svg' %}" alt="OLN TV Container" class="w-full relative z-10 pointer-events-none">
+                
+                <div class="tv-screen-hotspot">
+                    <iframe class="w-full h-full rounded-lg" 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="relative w-full max-w-3xl drop-shadow-2xl hover:scale-[1.02] transition-transform duration-300">
+                <img src="{% static 'images/OLNfilmtv.svg' %}" alt="OLN TV Container" class="w-full relative z-10 pointer-events-none">
+                
+                <div class="tv-screen-hotspot">
+                    <iframe class="w-full h-full rounded-lg" 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

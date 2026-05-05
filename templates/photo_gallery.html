@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLN Photo Gallery • One Love Nation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body, html { margin: 0; padding: 0; background-color: #000; overflow-x: hidden; }
+        .page-wrapper { position: relative; width: 100%; }
+        
+        /* Layer 1: Backgrounds */
+        .background-layer { display: flex; flex-direction: column; width: 100%; }
+        .background-layer img { width: 100%; display: block; }
+
+        /* Layer 2: Frames Overlay */
+        .frames-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; z-index: 20; padding-top: 45%; transform: scale(1.05);
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .frame-item {
+            position: relative; width: 88%; max-width: 650px;
+            margin-bottom: 12vw; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6));
+        }
+
+        /* Common Container Logic */
+        .hotspot-container {
+            position: absolute;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 2px; /* Small positive gap instead of negative */
+            overflow: hidden; /* Stops pictures from spilling outside the frame */
+            border-radius: 5px;
+        }
+
+        /* --- SPECIFIC FRAME CALIBRATION --- */
+        /* Adjust these percentages to line up with the silver area of each SVG */
+        
+        .uk-grid {
+            top: 21%; left: 10.5%; width: 79%; height: 68%;
+        }
+
+        .egypt-grid {
+            top: 22%; left: 11%; width: 78%; height: 66%;
+        }
+
+        .kenya-grid {
+            top: 20%; left: 10%; width: 80%; height: 70%;
+        }
+
+        /* The Pictures */
+        .hotspot {
+            width: 100%; height: 100%; object-fit: cover; cursor: pointer;
+            /* Use scale here to shrink the image slightly inside its grid cell */
+            transform: scale(0.96); 
+            transition: transform 0.3s ease;
+        }
+        .hotspot:hover { transform: scale(1.02); z-index: 10; }
+
+        /* Lightbox */
+        #lightbox {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98);
+            z-index: 100; justify-content: center; align-items: center; touch-action: none;
+        }
+        #lightbox img { max-width: 90%; max-height: 85vh; border-radius: 8px; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+        #counter { position: absolute; bottom: 5%; color: #888; font-family: monospace; }
+    </style>
+</head>
+<body class="text-white">
+
+    <nav class="fixed top-8 left-8 z-50">
+        <a href="/main/" class="text-yellow-300 text-lg font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">← </a>
+    </nav>
+
+    <main class="page-wrapper">
+        <div class="background-layer">
+            <img src="{% static 'images/OLN photogallery1.svg' %}" alt="Top">
+            <img src="{% static 'images/OLN photogallery2.svg' %}" alt="Bottom">
+        </div>
+
+        <div class="frames-overlay">
+            
+            <div class="frame-item">
+                <img src="{% static 'images/5.svg' %}" class="w-full">
+                <div class="hotspot-container uk-grid">
+                    <img src="https://picsum.photos/id/60/400/400" class="hotspot" onclick="openLightbox(0, 'uk')">
+                    <img src="https://picsum.photos/id/61/400/400" class="hotspot" onclick="openLightbox(1, 'uk')">
+                    <img src="https://picsum.photos/id/62/400/400" class="hotspot" onclick="openLightbox(2, 'uk')">
+                    <img src="https://picsum.photos/id/63/400/400" class="hotspot" onclick="openLightbox(3, 'uk')">
+                </div>
+            </div>
+
+            <div class="frame-item">
+                <img src="{% static 'images/4.svg' %}" class="w-full">
+                <div class="hotspot-container egypt-grid">
+                    <img src="https://picsum.photos/id/70/400/400" class="hotspot" onclick="openLightbox(0, 'egypt')">
+                    <img src="https://picsum.photos/id/71/400/400" class="hotspot" onclick="openLightbox(1, 'egypt')">
+                    <img src="https://picsum.photos/id/72/400/400" class="hotspot" onclick="openLightbox(2, 'egypt')">
+                    <img src="https://picsum.photos/id/73/400/400" class="hotspot" onclick="openLightbox(3, 'egypt')">
+                </div>
+            </div>
+
+            <div class="frame-item">
+                <img src="{% static 'images/3.svg' %}" class="w-full">
+                <div class="hotspot-container kenya-grid">
+                    <img src="https://picsum.photos/id/80/400/400" class="hotspot" onclick="openLightbox(0, 'kenya')">
+                    <img src="https://picsum.photos/id/81/400/400" class="hotspot" onclick="openLightbox(1, 'kenya')">
+                    <img src="https://picsum.photos/id/82/400/400" class="hotspot" onclick="openLightbox(2, 'kenya')">
+                    <img src="https://picsum.photos/id/83/400/400" class="hotspot" onclick="openLightbox(3, 'kenya')">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="lightbox" onclick="closeLightbox()">
+        <button class="absolute top-10 right-10 text-4xl">&times;</button>
+        <button class="absolute left-5 top-1/2 -translate-y-1/2 text-5xl text-yellow-300" onclick="event.stopPropagation(); changeImage(-1)">&#10094;</button>
+        <img id="lightbox-img" src="">
+        <button class="absolute right-5 top-1/2 -translate-y-1/2 text-5xl text-yellow-300" onclick="event.stopPropagation(); changeImage(1)">&#10095;</button>
+        <div id="counter"></div>
+    </div>
+
+    <script>
+        const galleries = {
+            uk: ["https://picsum.photos/id/60/1200/800", "https://picsum.photos/id/61/1200/800", "https://picsum.photos/id/62/1200/800", "https://picsum.photos/id/63/1200/800"], // Add more...
+            egypt: ["https://picsum.photos/id/70/1200/800", "https://picsum.photos/id/71/1200/800", "https://picsum.photos/id/72/1200/800", "https://picsum.photos/id/73/1200/800"], // Add more...
+            kenya: ["https://picsum.photos/id/80/1200/800", "https://picsum.photos/id/81/1200/800", "https://picsum.photos/id/82/1200/800", "https://picsum.photos/id/83/1200/800"]  // Add more...
+        };
+
+        let currentActiveGallery = [];
+        let currentIndex = 0;
+
+        function openLightbox(index, category) {
+            currentActiveGallery = galleries[category];
+            currentIndex = index;
+            updateDisplay();
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+
+        function changeImage(dir) {
+            currentIndex = (currentIndex + dir + currentActiveGallery.length) % currentActiveGallery.length;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('lightbox-img').src = currentActiveGallery[currentIndex];
+            document.getElementById('counter').innerText = `${currentIndex + 1} / ${currentActiveGallery.length}`;
+        }
+
+        function closeLightbox() { document.getElementById('lightbox').style.display = 'none'; }
+
+        let touchstartX = 0;
+        let touchendX = 0;
+        const lb = document.getElementById('lightbox');
+        lb.addEventListener('touchstart', e => touchstartX = e.changedTouches[0].screenX);
+        lb.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            if (touchstartX - touchendX > 50) changeImage(1);
+            if (touchendX - touchstartX > 50) changeImage(-1);
+        });
+    </script>
+</body>
+</html>

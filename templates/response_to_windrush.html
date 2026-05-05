@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Response to Windrush • One Love Nation</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @font-face {
+            font-family: 'Great Vibes';
+            src: url('{% static "fonts/GreatVibes-Regular.ttf" %}') format('truetype');
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: url('{% static "images/Coverpage.jpeg" %}') center/cover fixed;
+            background-attachment: fixed;
+            overflow: hidden;
+            position: relative;
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 35px;
+            left: 35px;
+            color: #f5e8c7;
+            font-size: 1.2rem;
+            text-decoration: none;
+            z-index: 20;
+        }
+
+        .open-btn-container {
+            position: fixed;
+            bottom: 45px;
+            right: 45px;
+			transform: scale(0.48);
+            z-index: 50;
+        }
+
+        .open-btn {
+            padding: 18px 52px;
+            font-size: 2.1rem;
+            background: linear-gradient(#f7d94a, #e0b52a);
+            color: #111;
+            border-radius: 50px;
+            border: none;
+            box-shadow: 0 12px 35px rgba(207, 162, 31, 0.75);
+            cursor: pointer;
+			transform: scale(0.48);
+            transition: all 0.3s ease;
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .open-btn:hover {
+            transform: scale(0.48);
+            box-shadow: 0 15px 40px rgba(207, 162, 31, 0.9);
+        }
+    </style>
+</head>
+<body>
+
+    <a href="/main/" class="back-link">← Back to Homepage</a>
+
+    <div class="open-btn-container">
+        <a href="/response-to-windrush-youtubepoems/" class="open-btn">
+            Open the Book →
+        </a>
+    </div>
+
+</body>
+</html>

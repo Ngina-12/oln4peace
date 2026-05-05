@@ -1,0 +1,1337 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Response to Windrush • One Love Nation</title>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    height: 100%;
+  }
+
+  body {
+    height: 100%;
+    font-family: 'Great Vibes', cursive;
+    color: white;
+  }
+
+  .page {
+    height: 100vh;
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Page 1 ── */
+  #page-1 {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  /* ── Nav dots ── */
+  .nav-dots {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255,204,0,0.4);
+    border: 1.5px solid rgba(255,204,0,0.7);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dot.active {
+    background: #ffcc00;
+    transform: scale(1.4);
+  }
+
+  /* ── Arrow navigation ── */
+  .nav-arrow {
+    position: fixed;
+    bottom: 36px;
+    right: 50px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    color: #ffcc00;
+    background: rgba(0,0,0,0.25);
+    border: 1.5px solid rgba(255,204,0,0.5);
+    border-radius: 40px;
+    padding: 10px 28px;
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    user-select: none;
+  }
+
+  .nav-arrow:hover {
+    background: rgba(255,204,0,0.2);
+    border-color: #ffcc00;
+    color: #fff;
+  }
+
+  .nav-arrow.up {
+    bottom: auto;
+    top: 36px;
+    right: 50px;
+  }
+
+  .page-counter {
+    position: fixed;
+    bottom: 36px;
+    left: 50px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: rgba(255,204,0,0.7);
+    letter-spacing: 0.15em;
+    z-index: 100;
+  }
+
+  /* ── Poem text containers & Pages ── */
+  .poem-page {
+    background-size: cover;
+    background-position: center top; /* Ensures the header text in the image is always at the top */
+    background-repeat: no-repeat;
+    justify-content: flex-start; /* Aligns content to start from the top */
+    padding-top: 26vh; /* Pushes the scrollable container exactly below the printed image header */
+  }
+
+  .poem-text-wrap {
+    position: relative;
+    z-index: 5;
+    width: 88%;
+    max-width: 650px;
+    margin: 0 auto 5vh auto;
+    /* Soft, light frosted-glass panel to contrast with the dark red text and gold background */
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.2);
+    
+    /* Inner scroll */
+    max-height: 64vh;
+    overflow-y: auto;
+    padding: 2rem 1.8rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(102, 0, 0, 0.5) transparent;
+  }
+
+  .poem-text-wrap::-webkit-scrollbar {
+    width: 6px;
+  }
+  .poem-text-wrap::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .poem-text-wrap::-webkit-scrollbar-thumb {
+    background: rgba(102, 0, 0, 0.6);
+    border-radius: 4px;
+  }
+
+  .poem-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+    font-weight: 600;
+    line-height: 1.8;
+    color: #5a0000; /* Deep maroon/red matched to the header image text */
+    text-align: center;
+    white-space: pre-wrap; /* Preserves formatting and line breaks */
+    text-shadow: 0px 0px 2px rgba(255, 255, 255, 0.6); /* Adds a subtle glow to make text pop */
+  }
+
+  /* ── Back to Top button (shown only on last page) ── */
+  .back-to-top {
+    display: none;
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    color: #ffcc00;
+    background: rgba(0,0,0,0.3);
+    border: 1.5px solid rgba(255,204,0,0.55);
+    border-radius: 40px;
+    padding: 10px 28px;
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    user-select: none;
+  }
+
+  .back-to-top:hover {
+    background: rgba(255,204,0,0.2);
+    border-color: #ffcc00;
+    color: #fff;
+  }
+
+  .back-to-top.visible {
+    display: block;
+  }
+
+  /* subtle fade at bottom of scroll area */
+  .poem-text-wrap::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    display: block;
+    background: linear-gradient(transparent, rgba(255,255,255,0.4));
+    pointer-events: none;
+    margin-top: -40px;
+    border-radius: 0 0 18px 18px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav-dots" id="navDots">
+  <div class="dot" onclick="goTo(0)" title="Page 1"></div><div class="dot" onclick="goTo(1)" title="Page 2"></div><div class="dot" onclick="goTo(2)" title="Page 3"></div><div class="dot" onclick="goTo(3)" title="Page 4"></div><div class="dot" onclick="goTo(4)" title="Page 5"></div><div class="dot" onclick="goTo(5)" title="Page 6"></div><div class="dot" onclick="goTo(6)" title="Page 7"></div><div class="dot" onclick="goTo(7)" title="Page 8"></div><div class="dot" onclick="goTo(8)" title="Page 9"></div><div class="dot" onclick="goTo(9)" title="Page 10"></div>
+</nav>
+
+<div class="page-counter" id="pageCounter">01 / 10</div>
+
+<a class="nav-arrow up" id="upArrow" onclick="goPrev()">↑</a>
+<a class="nav-arrow" id="downArrow" onclick="goNext()">↓</a>
+<a class="back-to-top" id="backToTop" onclick="goTo(0)">↑ Back to Top</a>
+
+<section class="page" id="page-1" style="background-image: url('{% static 'images/OLNresponseindex.svg' %}');">
+</section>
+
+<section class="page poem-page" id="page-2" style="background-image: url('{% static 'images/Responsetowindrushpoem.png' %}');">
+  <div class="poem-text-wrap">
+<div class="poem-body">Response to Windrush  
+
+No more hush, hush  
+
+it's time to step up  
+
+stand up  
+
+  
+
+This is the hour  
+
+to take back our power  
+
+say it loud  
+
+say it proud  
+
+  
+
+I am living witness  
+
+to the wonder of 
+
+the God we're under  
+
+who dwells in all our hearts  
+
+Giving us the keys to his kingdom  
+
+With all his wisdom  
+
+I'm here for the living  
+
+Awaking all nations  
+
+into the One Love Nation 
+
+Yep, we ain't Jah Fakin'  
+
+We are the One Love Nation  
+
+  
+
+Response to Windrush  
+
+no more hush, hush  
+
+  
+
+Standing proud 
+
+As I’m singing  
+
+with the love 
+
+we're bringing  
+
+  
+
+Knowing on this land  
+
+This planet earth  
+
+I am sovereign from my birth  
+
+  
+
+Yes, remembering I am sovereign  
+
+A yet there is only one true King  
+
+And it's ‘im I'm forever serving  
+
+  
+
+I am loud hear me roar  
+
+Lion of Zion  
+
+Here to help the sheep awake  
+
+from their deep sleep  
+
+as they stand and gaze  
+
+at the mess we've made  
+
+of this garden of Eden  
+
+  
+
+Time for a quick rewind  
+
+Back to the beginning  
+
+When we all were singing  
+
+of the pure love  
+
+we're bringing  
+
+into the Palace of Reason  
+
+Yes, the New Garden of Eden</div>
+  </div>
+</section>
+
+<section class="page poem-page" id="page-3" style="background-image: url('{% static 'images/ComeoneComeall.png' %}');">
+  <div class="poem-text-wrap">
+<div class="poem-body">Place your poem text here.
+
+Each line break will be preserved
+as you type or paste the poem.
+
+Scroll down to read more stanzas
+when the poem is longer than
+the visible area.</div>
+  </div>
+</section>
+
+<section class="page poem-page" id="page-4" style="background-image: url('{% static 'images/winloseordraw.png' %}');">
+  <div class="poem-text-wrap">
+<div class="poem-body">We all know the score
+
+When you know what it's for
+
+Then when you're having a draw
+
+You're neither winner nor loser
+
+See me Mr Accuser
+
+Just 'cos ya think me user
+
+Trust me I am no abuser
+
+of the gifts we're given
+
+And I am never forgetting
+
+Where I come from
+
+Ya know the place
+
+Where we all belong
+
+If you're thinking differently
+
+I am sorry but you're wrong
+
+This ain't no bitter roots song
+
+And it won't take long
+
+'Cos I'm here to convince you
+
+This time is for collaboration
+
+We are the new generation
+
+Coming together
+
+United in prayer
+
+No more religions
+
+Just remembering
+
+Our own true
+
+(sovereign-divine) nature 
+
+Infinitely worthy
+
+Ever humble</div>
+  </div>
+</section>
+
+<section class="page poem-page" id="page-5" style="background-image: url('{% static 'images/poemOnelovenation.png' %}');">
+  <div class="poem-text-wrap">
+<div class="poem-body">It's been a long time coming 
+And we're offering you all 
+An open invitation 
+Come join the 
+One Love Nation 
+  
+Step out of fear 
+& into love 
+In this you will feel God above 
+In your hearts 
+& in your minds 
+In the verses of these rhymes 
+  
+Sing all the songs of times gone by 
+When peace was the premium  
+All were glad to pay 
+To feel the darkness fall away 
+  
+Let go of what does not serve 
+Be it subjective, objective, adjective or verb 
+I hope your hearing every word 
+'Cos these are songs to guide your heart 
+So we can make a brand-new start 
+  
+Release all pain and suffering 
+No longer feeding into them 
+And all the horrors they would bring 
+Into this grand illusion 
+Of your own imagining 
+Your self separation 
+Again & again 
+& again & again 
+& again…. 
+  
+This is the  
+One Love Nation 
+Watch us dancing for the creation 
+Of the planet of our dreams 
+With love bursting out 
+Through all it seems 
+  
+Radical Shifts 
+Are happening 
+New Paradigms 
+Worth entering 
+Right Here  
+Right Now 
+Not some future date 
+This ain't up for debate! 
+  
+No time for sitting on the fence 
+Or lying there at the gate 
+The door is open wide 
+All you need do 
+Is walk right inside 
+Trust in your heart 
+Find the voice within 
+  
+And as you do 
+Let's start to sing in a 
+New vibration  
+Of love & appreciation 
+Love your fellow citizens 
+Of Earth Ship Satellite 
+  
+You see the twinkle 
+Of the stars at night 
+& wonder why they shine so bright? 
+They know who you are! 
+And where you're from! 
+They're here to remind you all night long 
+  
+But often you would rather sleep 
+So attached to the nightmares 
+Made to scare in feelings 
+So frightened of what change will bring 
+Worried that you just can't sing 
+Your fear of rejection 
+Break for the rhythm section 
+Yes, your fear of rejection 
+Has no basis or foundation 
+Here at the 
+One Love Nation 
+  
+Where child like curiosity 
+Is enough to open up the keys 
+To your true identity 
+Your true divinity 
+Remember what you see in me 
+Absolute transparency  
+Into me see ~ Divinity 
+Your own true nature 
+  
+Through Bhakti you can come full circle 
+Like Alfa and Omega 
+Be you the Queen of Sheba 
+Or a beggar on the street 
+Once you connect the dots 
+All will be dancing at your feet 
+Feeling the love your bringing 
+With the sweet songs your singing 
+  
+Om Shiva Shakti Om 
+Loka Samasta 
+As a Rasta 
+Chanting down Babylon 
+Lakshmi & Saraswati 
+Cherubim & Seraphim 
+Angels from heaven 
+Need no appreciation 
+  
+Often it's a thankless task 
+Helping the frightened 
+See through their terrifying masks 
+Especially when they never asked 
+  
+Yet angels sing in 
+Trust & Faith 
+Patience & Kindness 
+Without debate 
+Knowing however long it takes 
+It will never be too late 
+For time is mere illusion 
+  
+And there is nothing that you can do wrong 
+So, if for now you prefer a different song 
+We'll still be here 
+For you to join another year 
+Once you no longer want to hear 
+The lies of the corruptors 
+Exhausted by their every move 
+To bore fear right into you 
+Finally prepared to make the leap 
+To awaken from your ancient sleep 
+  
+My darling child 
+My baby sheep 
+Rest with the Lion 
+If you can 
+In a field beyond reason 
+Expanded and shining bright 
+So, you may be a guiding light 
+For future generations 
+Of the One Love Nation 
+  
+Like the stars shining in the night 
+Acting as reminder 
+To those still trapped with locked in fear 
+That God is real 
+& love can hear 
+their cries of desperation 
+From a place of self-imposed separation</div>
+  </div>
+</section>
+
+<section class="page poem-page" id="page-6" style="background-image: url('{% static 'images/Evolution.png' %}');">
+  <div class="poem-text-wrap">
+<div class="poem-body">Flowing like a sea of love
+Feeling connected to vibration
+Moving like the ocean tide
+Greeting the rocky shore
+Slowly breaking down resistance
+After some millennia
+sands can slip through glass devices
+turning mountains into mole hills
+Through the glass all can see
+under microscopic lens
+Sand is glass
+every molecule
+Shifting slowly or fast as lightning
+Through the vehicle of raising vibration
+Be careful what you do and say
+Reality’s the choice you make
+From the stand point of your mind
+Chattering gibberish over half the time
+Once you’re no longer
+Tuning into chimp, monkey & his kin
+Enjoy the silence
+That’s your right
+Expand your heart
+See the light.
+
+These songs are for the brave
+Brothers and sisters
+Wanting to lead the way
+Showing the rest how to behave
+Until the game is over….
+
+But seriously, what ya waiting for
+Surely war’s become a bore.
+Even for the leaders
+See it in their faces?
+Clinging to trophies of the past
+Knowing this can’t last
+Ancestors into Kings & Queens
+Today we’d call them
+Dirty stinking rotten thieves
+Ill-gotten gains
+They now call treasures
+But what a price they have to pay
+Too afraid to live amongst us
+Or on the streets of London.
+Needing armed protection
+MILITARY ENSLAVEMENT
+Bunkers for fear what’s happening on the street
+Plans to go underground
+Like rats with diamonds
+Believing the false light they’re generating
+Is enough to sustain them
+Boy, that’s some price they’re paying
+A powerful separation
+Requires radical change of heart
+Precision double bypass
+A brand new start
+Swapping crowns & palaces
+For
+FREEDOM
+
+Releasing them from FEAR of death
+Connecting with the field of love
+Through their own breath
+No more drinking in blood like vampires
+Sure, blood will run dry
+Knowing death’s a lie
+I invite you
+Come play with us
+You’re forgiven all exploitation
+All the lives you thought you’d taken
+You’re mistaken
+As every soul’s eternal
+There’s still room at the table
+When you’re ready to forget
+The old dimension
+Ya hear me mention?
+A new one’s waiting
+The lovevibration
+Calling you to enter
+The One Love  Nation.
+No borders
+No more WARS
+Just sharing & caring for all
+Our sisters & brothers
+For we are lovers
+Gently welcoming
+All those who believed in sin
+Releasing them from suffering
+Easing pain, opening space
+Where the DIVINE can enter in
+Offering them GRACE
+That they shall remember.</div>
+  </div>
+</section>
+
+<section class="page poem-page" id="page-7" style="background-image: url('{% static 'images/Messengersfromjah.png' %}');">
+  <div class="poem-text-wrap">
+<div class="poem-body">A channeled response to your official recall!
+
+Hope you're hearing loud and clear
+There will be no more buying into fear!
+We have a few choice words
+For you who have imperialised the planet
+Without his command
+
+This is ultimate reality 
+Have your chap go fetch ya a cuppa tea
+
+One law for all
+As above so below
+If you can't follow this
+You'll have to go
+
+A worldwide audience
+Watched in wonder
+At the intergalatic spectacle
+An alien creature entered into your house of pain
+One who is not scared to call me by name
+
+Now televised and recorded into fact
+Was how the word made you react
+Yes we saw you all
+As my preacher spoke in your house of prayer
+
+You felt how he got so excited
+As he repeated, then highlighted
+The essence is love
+Over & over
+A metaphorical
+Home run!
+Boy that brother was having fun
+He smashed it right out the park
+Beyond all boundaries you have made
+With fearless momentum
+Asserting the innocent remark
+When love rules
+The old ways
+Will not fit in
+For those still
+Fantasising of the good old days
+Still hypnotised by all your charms
+His words must have hurt
+And him appear all arms
+Waving as he put his spin
+On the end
+Of needless suffering
+
+But you know this already
+Yet you refuse to let truth fully penetrate
+That's why over time
+Your faces are so filled with hate
+Evil eyes
+Sharpened teeth
+Your insides cannot lie
+Even with all your material wealth
+Haven't you heard 
+Real wealth is health
+And true health 
+Is peace of mind
+and an open heart!
+Lucky for you
+It's never too late to start
+
+Once you fully understand
+One soul is more precious
+Than all your lands
+You will no longer
+Give commands
+And yes, when you're ready
+To fully surrender
+You will be received
+By Heaven
+And you will
+Finally bow
+At true splendour</div>
+  </div>
+</section>
+
+<section class="page poem-page" id="page-8" style="background-image: url('{% static 'images/thenewearthseason.png' %}');">
+  <div class="poem-text-wrap">
+<div class="poem-body">This is the New Earth Season
+& I've only one reason
+'cos it's time for peace & harmony
+in the world that God has gifted me
+as I set all his children free
+as I step into full responsibility
+& move with agility
+Dancing in devotion
+Juicing on E motion
+Don't need no love potion
+Once you know how to truly pray
+I'm a spiritual master
+And I've only one thing to ask ya
+Remember who you are!
+
+Ain't no superstar
+Can't play no guitar
+I'm a chanting singer
+& I'm only a beginner
+Childlike in innocence
+Chose to drop my defence
+Trusting in
+Pure Loving Presence
+
+Close your eyes
+& open your hearts
+& lets go back to the start
+
+The new earth season
+& I've only one reason
+'cos it's time for
+Peace & harmony
+As I set all God's children
+Free
+as I step into full responsibility
+Moving with agility
+Feeling our divinity
+Dancing with emotion
+Bowing in devotion
+No need for a love potion
+
+Supply is on the inside
+Built in apothecary
+Mystical 
+Majestical
+It's time for the never ending festival
+Coming together whatever the weather
+Singing songs of celebration
+@ the One Love Nation
+
+Songs without endings
+
+Singing in
+Praise love & gratitude 
+It's our permanent attitude
+Can I get you in the mood
+For sweet love making
+Offerings of love
+Not taking
+'cos we know
+Jah ain't fakin'
+He knew what he was making
+Allowed us time
+'til we're ready to see
+us and mine
+as all the same thing
+
+Let's go back to the beginning
+When all we did
+Was sing our song
+All day long
+Knowing that we all belong
+Loving our fellow man
+No need to rob
+No need to scam
+
+Love is
+Ever abundant
+Limitless 
+Once you know it
+It's the best
+You have no interest in illusions
+
+Ever present
+Neverending
+Limitless
+Feel it pounding in your chest?
+Right in the centre
+This is where we enter
+into
+Infinity
+
+Trust in me & you will see
+The light inside you
+No man made laws can bind you
+Or confine you
+Once you're juicing on the inside
+You understand this plane
+Is just a ride
+So be light hearted
+As we go back
+To where we started 
+
+to the Garden of Eden
+Yes, come now all God's children
+I'm just a yoga teacher
+Bendy Bhakti
+Nice to meet ya
+Sing a long with me some
+& you'll learn to have some fun
+As worship leads to Joy
+Like a brand new toy
+Diving into reverence
+Bathing in the bliss 
+Singing with a pure heart
+Let's take it back to the start
+
+Join in with the chorus
+We're Angels
+You can't bore us!
+We'll aleve you of your problems
+When you tune into the chorus
+Go deeper on the inside
+Letting go of what don't feel right
+Re-writing the story
+That was founded
+And compounded
+in misery
+Remembering what it felt like
+Before the separation
+
+Back to the 
+One Love Nation
+Yes, feel the love vibration
+It's the only true sensation
+& this is what you're based on
+No need for full explanations
+All has been forgiven
+In the land of the 
+Almighty
+
+Now just play nicely!
+'Cos we're all God's children
+& that's is what we're here for
+So go get creative
+Marvel at the wonders
+Connect with your own
+Inner Mystic
+
+Trust
+There's no mistaking
+Just misunderstanding
+It's time to overstand
+Trust in the almighty
+Christ on the inside
+No need to run
+No need to hide
+When he is ever 
+By your side
+Acting as your inner guide
+Some call it Holy Spirit
+As you learn to recognise it
+You know where to find it
+Turn your back to the illusion
+That there was ever separation
+
+Re-join and rejoice
+As you return
+to the One Love Nation
+Now that's enough information
+
+Time to just
+Be love
+Give love
+Be love
+Sing love
+Feel love
+Trust love
+Open to open
+in the never ending cycle
+Of giving & receiving
+No more thieving
+Nor enslaving
+
+Now don't that feel amazing?
+Releasing the old story
+Laughing in the face of fear
+So hard that you shed a tear
+Of joy & laughter
+
+That's how it is here
+In the ever after
+Here @ the Rainbow's End 
+Yes, come with me my friend
+Let's keep it plain & simple
+Just like a baby's dimple
+As it smiles with shiny eyes
+Happy just to be alive
+Surrendered to the wonder
+Can you hear the thunder?
+It's the pounding of your heart
+Leading you back to the start!
+
+Return of innocence 
+Isn't it magnificent?
+Abiding in God's presence
+Yes, it feels like Heaven.</div>
+  </div>
+</section>
+
+<section class="page poem-page" id="page-9" style="background-image: url('{% static 'images/overseeingthereturn.png' %}');">
+  <div class="poem-text-wrap">
+<div class="poem-body">You can put your loaded gun in my hand
+But I ain't pulling no trigger
+Now go figure
+
+I ain't no politican
+I'm the real deal
+& Jah is my maker
+See we all his children
+All Kings and Queens
+In our own sovereignty 
+
+& that's how it should be
+where everyone is free
+over land or sea
+That's how it must be!
+Same as every other creature
+
+So we ain't paying no taxes
+We're not listening to false laws
+that we never asked for
+No more buying into propaganda
+
+The more honest natural law
+is something ya may 'ave saw
+see me a true world leader
+& i'm doing you a favour
+
+I'm here for you
+to help ya see the flaw
+in your behaviour
+I ain't no saviour
+
+For the choice is yours
+It's that plain and simple
+
+I ain't signed to no label
+You copy that Major
+(oops I mean)
+All them under soul
+movers and shakers
+shuffling for favours
+promising false promises
+
+Who on Earth sent ya?
+Have you met our maker?
+'cos to follow in his footsteps
+is to truly know
+he placed himself inside ya
+
+If you just Relax & Listen 
+He will tell ya
+Our mission
+is
+sweet love, sweet ;love
+(are you feeling?)
+sweet love, sweet love
+Calling all angels
+join in with the chorus
+
+if you tried the plant ganga
+back in your college days
+if you were ready to be
+lead through the maze
+down through the rabbit hole
+if you were brave enough
+to let it in- you'd know
+we were all placed here on Earth
+to dance & sing
+
+All Praise to the one true King
+with all our holy bredren
+Respect & Praise
+to the almighty
+Jah - rastafari
+
+It don't matter if ya can't see us
+Ya hear me that's enough
+slowly breathing in some
+of the essence of our being
+connecting to the Christ within
+
+Not selling or mis-using
+trading with the wrong side
+This is the age of transparency
+so if you know your history
+Who the Hell do you think I am?
+I'm no slave enchanter
+I ain't no paid pied piper
+Just the truth of my insights
+no you can't run
+you can't hide
+
+Lucky for you
+I'm a real world leader
+& I'm no taker
+I'm no deal breaker
+I've been speaking with our maker
+If you are ready?
+We can set out
+a restitution deal
+resolution of all conflicts plan…
+Just love & respect ya fellow man!
+
+I'm here for all hearts & minds
+Just like the Queen Grand-daughter in  law preacher
+I ain't no defeater
+& this ain't no game I'm playing
+we're singing songs of freedom
+
+For all god's children
+yes we're letting you of light Lee
+sometimes outta sight Lee
+don't wanna fight ye
+
+Ain't saving for the future
+we outside of that programme
+no more BBC
+for me longtime ago
+do ya hear me though?
+
+That & all the other pills that you're pushing
+I refuse to swallow
+I hope you're listening carefully
+as this is my prayer for thee
+from my almighty to
+thee almighty
+don't be scared now
+You're entity to show him that you love me
+
+Relax & understand 
+I ain't no living man
+you can't silence or make demands
+I'm spirit vibration 
+pouring through the mouths
+of all open channels
+
+Can you get a handle on
+the errors of your ways?
+Ain't no judgment day
+& no need to pay rent
+Once you own your own story
+
+Dropped the separation
+& joined
+the One Love Nation</div>
+  </div>
+</section>
+
+<section class="page poem-page" id="page-10" style="background-image: url('{% static 'images/HRHlady.png' %}');">
+  <div class="poem-text-wrap">
+<div class="poem-body">Declaring her Majesty 
+
+Endtroducing  
+
+HRH Lady Hindsight 
+
+formerly  
+
+Miss Mouth Almighty 
+
+aka Outta Sight Lee 
+
+Queen of Insights 
+
+Reclaiming our Divinity 
+
+Proclaiming our Sovereignty 
+
+  
+
+Releasing false identities 
+
+  
+
+Back to the Light Lee 
+
+  
+
+Me no wanna fight ye 
+
+Just wanna live in unity 
+
+Where land meets sea 
+
+Where all are welcome 
+
+to join the celebration of 
+
+the splendour of creation 
+
+Yes, the 
+
+One Love Plant Nation 
+
+  
+
+Feel the positive vibration 
+
+'cos here we recognise 
+
+we all relations 
+
+All brothers & sisters 
+
+Here to sing & harmonise 
+
+Release the past 
+
+with open eyes 
+
+Bring in the new 
+
+re-set the clock 
+
+Conscious Lee 
+
+Selecting a new timeline 
+
+Where all are free 
+
+Living & singing & praying 
+
+In perfect harmony 
+
+  
+
+Whistling with birds 
+
+Dancing with the dolphins 
+
+Sleeping with the lion 
+
+safely home in Zion. 
+
+Guiding the sheeple 
+
+Out of the hell of misery 
+
+Mental enslavement 
+
+Brainwashed subservience 
+
+to an uncaring master 
+
+Like victims of disaster 
+
+Spell bound by their captors 
+
+Entrapped by laws 
+
+they never asked for 
+
+Invested in the status quo 
+
+Fraidy-fraidy 
+
+Don't wanna know 
+
+Apathetic 
+
+Transfixed with shit 
+
+  
+
+Fighting for crumbs 
+
+within this ancient regime 
+
+that ain't all that it seems 
+
+Lies & deceit 
+
+Broadcast as 
+
+facts and figures 
+
+All takers 
+
+No givers 
+
+  
+
+I'm here to open hearts 
+
+& open minds 
+
+  
+
+Whilst I sing you a little rhyme 
+
+  
+
+It's time for the ancient cycles of 
+
+feasts & famines 
+
+bread & circuses 
+
+to be broken 
+
+  
+
+Now I have spoken 
+
+Are you hearing my truth? 
+
+Sensing new possibilities 
+
+for you & your youth? 
+
+  
+
+If you're vibing with me 
+
+Take this as my open invitation 
+
+to come join  
+
+The One Love Nation</div>
+  </div>
+</section>
+
+<script>
+  const TOTAL = 10;
+  let current = 0;
+
+  const pages  = Array.from(document.querySelectorAll('.page'));
+  const dots   = Array.from(document.querySelectorAll('.dot'));
+  const counter = document.getElementById('pageCounter');
+  const upArrow = document.getElementById('upArrow');
+  const downArrow = document.getElementById('downArrow');
+  const backToTop = document.getElementById('backToTop');
+
+  function pad(n) { return String(n).padStart(2,'0'); }
+
+  function updateUI(idx) {
+    current = idx;
+    dots.forEach((d,i) => d.classList.toggle('active', i === idx));
+    counter.textContent = pad(idx+1) + ' / ' + pad(TOTAL);
+    upArrow.style.opacity   = idx === 0 ? '0.3' : '1';
+    downArrow.style.opacity = idx === TOTAL-1 ? '0.3' : '1';
+    backToTop.classList.toggle('visible', idx === TOTAL-1);
+  }
+
+  function goTo(idx) {
+    pages[idx].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function goNext() { if (current < TOTAL-1) goTo(current+1); }
+  function goPrev() { if (current > 0)       goTo(current-1); }
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); goNext(); }
+    if (e.key === 'ArrowUp'   || e.key === 'PageUp'  ) { e.preventDefault(); goPrev(); }
+  });
+
+  // IntersectionObserver to track current page
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = pages.indexOf(entry.target);
+        if (idx >= 0) updateUI(idx);
+      }
+    });
+  }, { threshold: 0.6 });
+
+  pages.forEach(p => observer.observe(p));
+  updateUI(0);
+</script>
+</body>
+</html>
