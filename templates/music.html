@@ -8,15 +8,12 @@
 
     <style>
         /* ====================== RESET & BASE ====================== */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        @font-face {
-           font-family: 'ITC Bauhaus Light'; 
-           src: url('{% static "Fonts/ITC Bauhaus Light Regular.otf" %}') format('opentype');
-           font-weight: 300;
-           font-style: normal;
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
         }
-		
+
         html, body {
             width: 100%;
             min-height: 100vh;
@@ -24,14 +21,16 @@
             overflow-x: hidden;
             font-family: 'ITC Bauhaus Light', sans-serif;
             color: #3b1360;
+            line-height: 1.4;
         }
 
         /* ====================== PAGE WRAPPER ====================== */
         .page-wrapper {
             position: relative;
             width: 100%;
-            max-width: 650px;
+            max-width: 680px;
             margin: 0 auto;
+            padding: 10px 8px;
         }
 
         .bg-svg {
@@ -44,45 +43,44 @@
         /* ====================== SCROLL OVERLAY ====================== */
         .scroll-overlay {
             position: absolute;
-            top: 37%;           
-            left: 3.5%;
-            right: 3.5%;
-            bottom: 1.5%;
+            top: 36%;           
+            left: 3.8%;
+            right: 3.8%;
+            bottom: 2%;
         }
 
         .scroll-container {
             width: 100%;
             height: 100%;
-            padding: 18px 16px;
+            padding: 20px 14px;
             background: url('{% static "images/OLNmusiccontainer.svg" %}') top center / cover no-repeat;
+            border-radius: 40px;
             overflow-y: auto;
-			border-radius: 40px;
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
         .scroll-container::-webkit-scrollbar { display: none; }
 
-        /* ====================== MUSIC CARDS (COLOUR VERSION) ====================== */
+        /* ====================== MUSIC CARDS ====================== */
         .music-card {
             display: flex;
             background: #deb3f5; 
             border-radius: 24px; 
             margin-bottom: 18px;
-            padding: 16px 14px 16px 16px;
+            padding: 14px;
+            gap: 14px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-            min-height: 200px;
         }
 
         .music-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-4px);
             box-shadow: 0 10px 25px rgba(176, 60, 255, 0.4);
         }
 
         .art-column {
-            width: 130px;
-            margin-right: 16px;
+            width: 128px;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
@@ -92,14 +90,14 @@
         .album-art {
             width: 100%;
             aspect-ratio: 1 / 1;
-            border-radius: 0px;
+            border-radius: 6px;
             object-fit: cover;
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
             margin-bottom: 8px;
         }
 
         .card-footer {
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             color: #ffffff;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
             text-align: center;
@@ -110,52 +108,37 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-			padding-right: 8px;
         }
 
         .card-title {
-            font-size: 0.78rem;
-			font-weight: 900;
+            font-size: 1.05rem;
+            font-weight: 900;
             color: #3a0ea2;
-            margin-bottom: 6px;
-            line-height: 1.05;
-			white-space: nowrap;
-			overflow: hidden;
-			width: 100%;
-			flex-shrink: 0;
-			margin-left: 5px;
-			transform: scale(0.75);
-			transform-origin: left center;
+            margin-bottom: 8px;
+            line-height: 1.1;
         }
 
         .card-description {
-            font-size: 0.425rem;
-			font-weight: 500;
-			font-family: 'ITC Bauhaus Light', sans-serif; 
-            line-height: 1.3;
+            font-size: 0.82rem;
+            line-height: 1.35;
             color: #3a0ea2;
             display: -webkit-box;
-            -webkit-line-clamp: 9;
+            -webkit-line-clamp: 7;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            margin-bottom: 12px;
         }
 
-        /* ====================== BUTTONS & HOTSPOT ====================== */
+        /* ====================== BUTTONS ====================== */
         .btn-group {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: auto;
+            margin-top: 12px;
         }
 
         .listen-btn {
             background: none;
             border: none;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             cursor: pointer;
             padding: 0;
             transition: transform 0.2s ease;
@@ -166,46 +149,63 @@
         }
 
         .listen-now-img {
-            height: 58px; 
+            height: 52px;
             width: auto;
             object-fit: contain;
-            display: block;
-            transition: filter 0.3s ease;
-			transform: scale(2.29);
-        }
-
-        .listen-btn::after {
-            content: '';
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>') no-repeat center;
-            background-color: #3a0ea280;
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-			margin-right: -28px;
-        }
-
-        .listen-btn.playing::after {
-            opacity: 1;
-        }
-
-        .listen-btn.playing .listen-now-img {
-            filter: brightness(0.6) grayscale(0.5);
         }
 
         .bandcamp-btn img {
-            height: 54px;
+            height: 48px;
             width: auto;
             transition: transform 0.2s ease;
-			transform: scale(2.15);
         }
 
         .bandcamp-btn:hover img {
             transform: scale(1.08);
+        }
+
+        /* ====================== RESPONSIVE ====================== */
+        @media (max-width: 380px) {
+            .scroll-container {
+                padding: 16px 12px;
+                border-radius: 32px;
+            }
+            .music-card {
+                padding: 12px;
+                gap: 12px;
+            }
+            .art-column {
+                width: 110px;
+            }
+            .card-title {
+                font-size: 0.98rem;
+            }
+            .card-description {
+                font-size: 0.78rem;
+                -webkit-line-clamp: 6;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            .scroll-overlay {
+                top: 35%;
+            }
+            .art-column { 
+                width: 135px; 
+            }
+        }
+
+        @media (min-width: 769px) {
+            .page-wrapper {
+                max-width: 720px;
+                padding: 20px 10px;
+            }
+            .scroll-container {
+                padding: 24px 20px;
+            }
+            .music-card {
+                padding: 18px;
+            }
         }
     </style>
 </head>
@@ -220,20 +220,20 @@
                 <!-- Card 1 -->
                 <div class="music-card">
                     <div class="art-column">
-                        <img src="{% static 'images/The Divine Magic Duo.jpeg' %}" class="album-art" alt="EP Cover">
+                        <img src="{% static 'images/The Divine Magic Duo.jpeg' %}" class="album-art" alt="The Divine Magic Duo EP" loading="lazy">
                         <div class="card-footer">Merangel108</div>
                     </div>
                     <div class="card-content">
                         <div>
                             <div class="card-title">The Divine Magic Duo EP</div>
-                            <div class="card-description">The EP is 2pieces4PEACE, featuring 2 distinctly different sides. Side 1 The Divine Magic Mix 7.22min Uber Chilled Super Conscious Ambient Vibes.OLN’s 1st official track.Side 2 Divine Timing – Proof of Time Travel.The epic one-man radio play starring the Mavrik.</div>
+                            <div class="card-description">The EP is 2pieces4PEACE, featuring 2 distinctly different sides. Side 1 The Divine Magic Mix 7.22min Uber Chilled Super Conscious Ambient Vibes. OLN’s 1st official track. Side 2 Divine Timing – Proof of Time Travel.</div>
                         </div>
                         <div class="btn-group">
                             <button onclick="togglePlayPause(this)" class="listen-btn">
                                 <img src="{% static 'images/listennow.png' %}" class="listen-now-img" alt="Listen Now">
                             </button>
                             <a href="https://onelovenation.bandcamp.com" target="_blank" class="bandcamp-btn">
-                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Bandcamp">
+                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Listen on Bandcamp">
                             </a>
                         </div>
                     </div>
@@ -242,113 +242,112 @@
                 <!-- Card 2 -->
                 <div class="music-card">
                     <div class="art-column">
-                        <img src="{% static 'images/shakespearreggae cover.jpeg' %}" class="album-art" alt="Reggae Cover">
+                        <img src="{% static 'images/shakespearreggae cover.jpeg' %}" class="album-art" alt="Shakspheare Reggae" loading="lazy">
                         <div class="card-footer">Merangel108</div>
                     </div>
                     <div class="card-content">
                         <div>
                             <div class="card-title">Shakspheare Reggae</div>
-                            <div class="card-description">The music on the Shakespeare Reggae Album forms the backing tracks to the real life movie.Recorded by the use of divine science to cause the race of mankind to acknowledge scalar time, the spiritual nature of every song speaks for itself.</div>
+                            <div class="card-description">The music on the Shakespeare Reggae Album forms the backing tracks to the real life movie. Recorded by the use of divine science...</div>
                         </div>
                         <div class="btn-group">
                             <button onclick="togglePlayPause(this)" class="listen-btn">
                                 <img src="{% static 'images/listennow.png' %}" class="listen-now-img" alt="Listen Now">
                             </button>
                             <a href="https://onelovenation.bandcamp.com" target="_blank" class="bandcamp-btn">
-                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Bandcamp">
+                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Listen on Bandcamp">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+				
+				<!-- Card 3 -->
+                <div class="music-card">
+                    <div class="art-column">
+                        <img src="{% static 'images/Bornandraisedintheghetto cover.jpeg' %}" class="album-art" alt="The Divine Magic Duo EP" loading="lazy">
+                        <div class="card-footer">Merangel108</div>
+                    </div>
+                    <div class="card-content">
+                        <div>
+                            <div class="card-title">Born and Raised in the Ghetto</div>
+                            <div class="card-description">The EP is 2pieces4PEACE, featuring 2 distinctly different sides. Side 1 The Divine Magic Mix 7.22min Uber Chilled Super Conscious Ambient Vibes. OLN’s 1st official track. Side 2 Divine Timing – Proof of Time Travel.</div>
+                        </div>
+                        <div class="btn-group">
+                            <button onclick="togglePlayPause(this)" class="listen-btn">
+                                <img src="{% static 'images/listennow.png' %}" class="listen-now-img" alt="Listen Now">
+                            </button>
+                            <a href="https://onelovenation.bandcamp.com" target="_blank" class="bandcamp-btn">
+                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Listen on Bandcamp">
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card 3 -->
+                <!-- Card 4 -->
                 <div class="music-card">
                     <div class="art-column">
-                        <img src="{% static 'images/Bornandraisedintheghetto cover.jpeg' %}" class="album-art" alt="New Earth Cover">
-                        <div class="card-footer">Merangel108</div>
-                    </div>
-                    <div class="card-content">
-                        <div>
-                            <div class="card-title">Born & Raised in the Ghetto</div>
-                            <div class="card-description">Deeply moving compositions exploring the bridge between classical heritage and reggae rhythm.</div>
-                        </div>
-                        <div class="btn-group">
-                            <button onclick="togglePlayPause(this)" class="listen-btn">
-                                <img src="{% static 'images/listennow.png' %}" class="listen-now-img" alt="Listen Now">
-                            </button>
-                            <a href="https://onelovenation.bandcamp.com" target="_blank" class="bandcamp-btn">
-                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Bandcamp">
-                            </a>
-                        </div>
-                    </div>
-                </div>
-				
-				<!-- Card 4 -->
-				 <div class="music-card">
-                    <div class="art-column">
-                        <img src="{% static 'images/thenewearthseason cover.jpeg' %}" class="album-art" alt="New Earth Cover">
+                        <img src="{% static 'images/thenewearthseason cover.jpeg' %}" class="album-art" alt="The Divine Magic Duo EP" loading="lazy">
                         <div class="card-footer">Merangel108</div>
                     </div>
                     <div class="card-content">
                         <div>
                             <div class="card-title">The New Earth Season</div>
-                            <div class="card-description">Deeply moving compositions exploring the bridge between classical heritage and reggae rhythm.</div>
+                            <div class="card-description">The EP is 2pieces4PEACE, featuring 2 distinctly different sides. Side 1 The Divine Magic Mix 7.22min Uber Chilled Super Conscious Ambient Vibes. OLN’s 1st official track. Side 2 Divine Timing – Proof of Time Travel.</div>
                         </div>
                         <div class="btn-group">
                             <button onclick="togglePlayPause(this)" class="listen-btn">
                                 <img src="{% static 'images/listennow.png' %}" class="listen-now-img" alt="Listen Now">
                             </button>
                             <a href="https://onelovenation.bandcamp.com" target="_blank" class="bandcamp-btn">
-                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Bandcamp">
+                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Listen on Bandcamp">
                             </a>
                         </div>
                     </div>
                 </div>
 				
-				<!-- Card 5 -->
-				 <div class="music-card">
+               <!-- Card 5 -->
+                <div class="music-card">
                     <div class="art-column">
-                        <img src="{% static 'images/songforDavid.jpeg' %}" class="album-art" alt="Song for David">
+                        <img src="{% static 'images/songforDavid.jpeg' %}" class="album-art" alt="The Divine Magic Duo EP" loading="lazy">
                         <div class="card-footer">Merangel108</div>
                     </div>
                     <div class="card-content">
                         <div>
                             <div class="card-title">Song for David</div>
-                            <div class="card-description">Deeply moving compositions exploring the bridge between classical heritage and reggae rhythm.</div>
+                            <div class="card-description">The EP is 2pieces4PEACE, featuring 2 distinctly different sides. Side 1 The Divine Magic Mix 7.22min Uber Chilled Super Conscious Ambient Vibes. OLN’s 1st official track. Side 2 Divine Timing – Proof of Time Travel.</div>
                         </div>
                         <div class="btn-group">
                             <button onclick="togglePlayPause(this)" class="listen-btn">
                                 <img src="{% static 'images/listennow.png' %}" class="listen-now-img" alt="Listen Now">
                             </button>
                             <a href="https://onelovenation.bandcamp.com" target="_blank" class="bandcamp-btn">
-                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Bandcamp">
+                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Listen on Bandcamp">
                             </a>
                         </div>
                     </div>
                 </div>
 				
 				<!-- Card 6 -->
-				 <div class="music-card">
+                <div class="music-card">
                     <div class="art-column">
-                        <img src="{% static 'images/Oceanofwords.jpeg' %}" class="album-art" alt="New Earth Cover">
+                        <img src="{% static 'images/Oceanofwords.jpeg' %}" class="album-art" alt="The Divine Magic Duo EP" loading="lazy">
                         <div class="card-footer">Merangel108</div>
                     </div>
                     <div class="card-content">
                         <div>
                             <div class="card-title">Ocean of Words</div>
-                            <div class="card-description">Ocean of Words was co-written with Michael Mavrik, Paget King and the late great Junior Delgado.Beyond the beauty of the song, Michael is gifted the memory of his golden carpet tour of Jamaica with his beloved foundation man breddrin.</div>
+                            <div class="card-description">The EP is 2pieces4PEACE, featuring 2 distinctly different sides. Side 1 The Divine Magic Mix 7.22min Uber Chilled Super Conscious Ambient Vibes. OLN’s 1st official track. Side 2 Divine Timing – Proof of Time Travel.</div>
                         </div>
                         <div class="btn-group">
                             <button onclick="togglePlayPause(this)" class="listen-btn">
                                 <img src="{% static 'images/listennow.png' %}" class="listen-now-img" alt="Listen Now">
                             </button>
                             <a href="https://onelovenation.bandcamp.com" target="_blank" class="bandcamp-btn">
-                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Bandcamp">
+                                <img src="{% static 'images/listenonbandcamp.png' %}" alt="Listen on Bandcamp">
                             </a>
                         </div>
                     </div>
                 </div>
-
 
             </div>
         </div>
@@ -356,17 +355,13 @@
 
     <script>
         function togglePlayPause(button) {
-            const isPlaying = button.classList.contains('playing');
-            
-            // Turn off all other active tracks[cite: 3]
+            // Turn off all other buttons
             document.querySelectorAll('.listen-btn').forEach(btn => {
                 btn.classList.remove('playing');
             });
 
-            // Toggle play/pause for the clicked track[cite: 3]
-            if (!isPlaying) {
-                button.classList.add('playing');
-            }
+            // Toggle current button
+            button.classList.toggle('playing');
         }
     </script>
 

@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-ntl!w@%n0#3-#hret)t=zly*1ggox(os-dbf$z$9w!@_%p6&5e' # Keep your key secret!
+SECRET_KEY = 'django-insecure-ntl!w@%n0#3-#hret)t=zly*1ggox(os-dbf$z$9w!@_%p6&5e'
 DEBUG = True 
 ALLOWED_HOSTS = ['*']
 
@@ -13,7 +13,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main', # Your app[cite: 3]
+    'main', 
 ]
 
 MIDDLEWARE = [
@@ -31,7 +31,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # Pointing to your custom templates[cite: 3]
+        'DIRS': [BASE_DIR / 'templates'], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
