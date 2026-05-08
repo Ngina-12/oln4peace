@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key-for-dev-only')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'False'
 
 # Allow all hosts temporarily – replace with your domain later
 ALLOWED_HOSTS = ['*']
@@ -22,6 +22,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',   # your app
+    'cloudinary_storage',
+     'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -92,3 +94,13 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Cloudinary Configuration
+if not DEBUG:
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': 'dj1zgtypu',
+        'API_KEY': '384581867772435',
+        'API_SECRET': '5Yz2ZA7JHjC4l8iHK6q4HMfmlV0',
+    }
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
