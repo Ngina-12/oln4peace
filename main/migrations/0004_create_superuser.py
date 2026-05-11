@@ -13,7 +13,7 @@ def create_superuser(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0003_alter_chapter_options_remove_galleryphoto_date_and_more.py'),  # <-- replace with your last migration file name
+        ('main', '0003_alter_chapter_options_remove_galleryphoto_date_and_more'),  # <-- replace with your last migration file name
     ]
 
     operations = [
