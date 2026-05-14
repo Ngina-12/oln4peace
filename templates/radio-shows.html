@@ -42,15 +42,14 @@
             align-items: center;
             gap: 4px;
             z-index: 10;
-			overflow: hidden;
+            overflow: hidden;
         }
 
-        /* ── Manually Calibrated Positions ── */
-        /* These accounts for the non-uniform text lengths in your SVG design */
+        /* Manually Calibrated Positions */
         .show-1  { top: 13.4%; }
         .show-2  { top: 19.4%; }
         .show-3  { top: 25.6%; }
-        .show-4  { top: 31.5%; } /* Jump due to longer text in Show 4 */
+        .show-4  { top: 31.5%; }
         .show-5  { top: 37.51%; }
         .show-6  { top: 43.8%; }
         .show-7  { top: 49.9%; }
@@ -84,7 +83,7 @@
         .waveform-canvas {
             flex: 1;
             height: 100%;
-			min-width: 0;
+            min-width: 0;
             display: block;
             cursor: pointer;
         }
@@ -98,28 +97,24 @@
 
     {% for audio in audios %}
     <div class="audio-hotspot show-{{ forloop.counter }}">
-        <button class="play-btn" data-audio-id="{{ audio.id }}" onclick="togglePlay(this)">
+        <button class="play-btn" data-audio-id="{{ audio.id }}">
             <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         </button>
-
-        <canvas
-            class="waveform-canvas"
-            data-audio-id="{{ audio.id }}"
-            onclick="seekAudio(event, this)">
-        </canvas>
-
-        <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}" preload="none"></audio>
+        <canvas class="waveform-canvas" data-audio-id="{{ audio.id }}"></canvas>
+        <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}" preload="metadata"></audio>
     </div>
     {% endfor %}
 
 </div>
 
 <script>
-const ICON_PLAY  = '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
-const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+// Icons as HTML strings
+const ICON_PLAY  = '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
 
-// ─── Waveform Renderer ───
+// ----- Helper: draw waveform on canvas -----
 function drawWaveform(canvas, progress = 0) {
+    if (!canvas) return;
     const W = canvas.offsetWidth;
     const H = canvas.offsetHeight;
     if (!W || !H) return;
@@ -169,79 +164,223 @@ function drawWaveform(canvas, progress = 0) {
     }
 }
 
-// ─── Controls ───
-function getProgress(audio) { return audio.duration ? audio.currentTime / audio.duration : 0; }
+// RoundRect helper (if not natively supported)
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+    CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        if (w < 2 * r) r = w / 2;
+        if (h < 2 * r) r = h / 2;
+        this.moveTo(x+r, y);
+        this.lineTo(x+w-r, y);
+        this.quadraticCurveTo(x+w, y, x+w, y+r);
+        this.lineTo(x+w, y+h-r);
+        this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+        this.lineTo(x+r, y+h);
+        this.quadraticCurveTo(x, y+h, x, y+h-r);
+        this.lineTo(x, y+r);
+        this.quadraticCurveTo(x, y, x+r, y);
+        this.closePath();
+        return this;
+    };
+}
 
-function resetAll(exceptAudioId) {
-    document.querySelectorAll('audio').forEach(a => {
-        if (a.id === ('audio-' + exceptAudioId)) return;
-        a.pause();
-        const btn = a.parentElement.querySelector('.play-btn');
-        if (btn) btn.innerHTML = ICON_PLAY;
+// ----- Global state -----
+let currentAudio = null;      // The <audio> element currently playing (or paused but selected)
+let currentButton = null;     // The corresponding play button
+let currentCanvas = null;     // The waveform canvas
+let animationFrameId = null;   // For progress animation
+
+function stopAnimation() {
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+}
+
+function startProgressAnimation(audio, canvas) {
+    stopAnimation();
+    function update() {
+        if (!audio.paused && audio.duration) {
+            const progress = audio.currentTime / audio.duration;
+            drawWaveform(canvas, progress);
+            animationFrameId = requestAnimationFrame(update);
+        } else {
+            // If paused or ended, draw final progress (if ended, draw full)
+            if (audio.ended) drawWaveform(canvas, 1);
+            else drawWaveform(canvas, audio.currentTime / audio.duration || 0);
+            stopAnimation();
+        }
+    }
+    update();
+}
+
+// Pause any currently playing audio and reset its button
+function pauseAllExcept(exceptAudioId) {
+    if (currentAudio && currentAudio.id !== 'audio-' + exceptAudioId) {
+        if (!currentAudio.paused) {
+            currentAudio.pause();
+            console.log(`Pausing previous audio: ${currentAudio.id}`);
+        }
+        if (currentButton) {
+            currentButton.innerHTML = ICON_PLAY;
+        }
+        currentAudio = null;
+        currentButton = null;
+        if (currentCanvas) {
+            // Draw final progress at the moment it was paused
+            drawWaveform(currentCanvas, currentCanvas.pausedProgress || 0);
+            currentCanvas = null;
+        }
+        stopAnimation();
+    }
+}
+
+// Event: click on play button
+function onPlayClick(btn, audio, canvas) {
+    const audioId = audio.id.split('-')[1];
+    console.log(`[DEBUG] Play button clicked for audio ID ${audioId}, current paused state: ${audio.paused}`);
+    
+    pauseAllExcept(audioId);
+    
+    if (audio.paused) {
+        // Try to play
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log(`[DEBUG] Play succeeded for ${audio.id}`);
+                btn.innerHTML = ICON_PAUSE;
+                currentAudio = audio;
+                currentButton = btn;
+                currentCanvas = canvas;
+                startProgressAnimation(audio, canvas);
+            }).catch(error => {
+                console.error(`[ERROR] Play failed for ${audio.id}:`, error);
+                // Reset button to play icon
+                btn.innerHTML = ICON_PLAY;
+                // Optionally show user feedback
+                alert("Playback failed. Check console or network.");
+            });
+        }
+    } else {
+        // Pause current audio
+        console.log(`[DEBUG] Pausing ${audio.id}`);
+        audio.pause();
+        btn.innerHTML = ICON_PLAY;
+        // Store current progress for canvas
+        const prog = audio.duration ? audio.currentTime / audio.duration : 0;
+        drawWaveform(canvas, prog);
+        if (currentAudio === audio) {
+            currentAudio = null;
+            currentButton = null;
+            currentCanvas = null;
+        }
+        stopAnimation();
+    }
+}
+
+// Event: seek via canvas click
+function onSeekCanvas(event, canvas, audio) {
+    if (!audio.duration) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const ratio = Math.min(1, Math.max(0, x / rect.width));
+    audio.currentTime = ratio * audio.duration;
+    console.log(`[DEBUG] Seeked ${audio.id} to ${audio.currentTime}s (${Math.round(ratio*100)}%)`);
+    drawWaveform(canvas, ratio);
+    // If audio is playing, let the animation update waveform; if paused, keep the drawn seek point.
+}
+
+// Handle audio ended event
+function onAudioEnded(audio, btn, canvas) {
+    console.log(`[DEBUG] ${audio.id} ended naturally`);
+    btn.innerHTML = ICON_PLAY;
+    drawWaveform(canvas, 1);
+    if (currentAudio === audio) {
+        currentAudio = null;
+        currentButton = null;
+        currentCanvas = null;
+        stopAnimation();
+    }
+}
+
+// Initialize all players: remove inline onclick, attach listeners, draw initial waveforms
+function initPlayers() {
+    const containers = document.querySelectorAll('.audio-hotspot');
+    containers.forEach(container => {
+        const btn = container.querySelector('.play-btn');
+        const canvas = container.querySelector('.waveform-canvas');
+        const audio = container.querySelector('audio');
+        if (!btn || !canvas || !audio) return;
+        
+        const audioId = audio.id.split('-')[1];
+        console.log(`[INIT] Setting up player for audio ID ${audioId}`);
+        
+        // Remove any existing inline onclick (just in case)
+        btn.removeAttribute('onclick');
+        canvas.removeAttribute('onclick');
+        
+        // Attach event listeners
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        const newCanvas = canvas.cloneNode(true);
+        canvas.parentNode.replaceChild(newCanvas, canvas);
+        
+        const finalBtn = newBtn;
+        const finalCanvas = newCanvas;
+        const finalAudio = audio;
+        
+        finalBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            onPlayClick(finalBtn, finalAudio, finalCanvas);
+        });
+        
+        finalCanvas.addEventListener('click', (e) => {
+            onSeekCanvas(e, finalCanvas, finalAudio);
+        });
+        
+        finalAudio.addEventListener('ended', () => {
+            onAudioEnded(finalAudio, finalBtn, finalCanvas);
+        });
+        
+        // Also listen for play/pause externally? not needed
+        // Draw initial waveform (progress 0)
+        drawWaveform(finalCanvas, 0);
     });
 }
 
-function seekAudio(event, canvas) {
-    const audioId = canvas.dataset.audioId;
-    const audio = document.getElementById('audio-' + audioId);
-    if (!audio.duration) return;
-    const ratio = event.offsetX / canvas.offsetWidth;
-    audio.currentTime = ratio * audio.duration;
-    if (audio.paused) drawWaveform(canvas, ratio);
-}
-
-function togglePlay(btn) {
-    const audioId = btn.dataset.audioId;
-    const audio = document.getElementById('audio-' + audioId);
-    const canvas = btn.parentElement.querySelector('.waveform-canvas');
-    resetAll(audioId);
-    if (audio.paused) {
-        audio.play();
-        btn.innerHTML = ICON_PAUSE;
-        raf(audio, canvas);
-    } else {
-        audio.pause();
-        btn.innerHTML = ICON_PLAY;
-    }
-}
-
-function raf(audio, canvas) {
-    if (audio.paused) return;
-    drawWaveform(canvas, getProgress(audio));
-    requestAnimationFrame(() => raf(audio, canvas));
-}
-
-// ─── Initialization ───
-function initAll() {
+// When SVG background loads, reveal container
+function initUI() {
     const container = document.getElementById('mainContainer');
     const bgSvg = document.getElementById('bgSvg');
-
-    const setupWaveforms = () => {
-        document.querySelectorAll('.waveform-canvas').forEach(canvas => {
-            const audioId = canvas.dataset.audioId;
-            const audio = document.getElementById('audio-' + audioId);
-            drawWaveform(canvas, 0);
-            audio.addEventListener('ended', () => {
-                canvas.parentElement.querySelector('.play-btn').innerHTML = ICON_PLAY;
-                drawWaveform(canvas, 1);
-            });
-        });
-        // Reveal container once background and waveforms are initialized
+    
+    const finishLoad = () => {
+        initPlayers();
         container.classList.add('loaded');
+        console.log('[INIT] All players initialized, container revealed.');
     };
-
+    
     if (bgSvg.complete) {
-        setupWaveforms();
+        finishLoad();
     } else {
-        bgSvg.addEventListener('load', setupWaveforms);
+        bgSvg.addEventListener('load', finishLoad);
     }
 }
 
+// Handle window resize to redraw waveforms for currently visible (if any)
 window.addEventListener('resize', () => {
-    document.querySelectorAll('.waveform-canvas').forEach(c => drawWaveform(c, getProgress(document.getElementById('audio-'+c.dataset.audioId))));
+    const allCanvases = document.querySelectorAll('.waveform-canvas');
+    allCanvases.forEach(canvas => {
+        const audioId = canvas.getAttribute('data-audio-id');
+        const audio = document.getElementById(`audio-${audioId}`);
+        if (audio) {
+            const prog = audio.duration ? audio.currentTime / audio.duration : 0;
+            drawWaveform(canvas, prog);
+        } else {
+            drawWaveform(canvas, 0);
+        }
+    });
 });
 
-document.addEventListener('DOMContentLoaded', initAll);
+document.addEventListener('DOMContentLoaded', initUI);
 </script>
 </body>
 </html>
