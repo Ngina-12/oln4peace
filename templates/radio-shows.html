@@ -5,17 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radio Shows • OLN4PEACE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #000; margin: 0; padding: 0; }
-        
-        /* The container keeps the aspect ratio of your SVG */
+        body {
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container is hidden until the SVG is fully loaded to prevent waveforms appearing first */
         .page-container {
             position: relative;
             width: 100%;
-            max-width: 500px; /* Limits width on tablets/desktops */
+            max-width: 500px;
             margin: 0 auto;
-            line-height: 0; /* Removes tiny gaps below images */
+            line-height: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .page-container.loaded {
+            opacity: 1;
         }
 
         .main-svg {
@@ -24,104 +33,215 @@
             display: block;
         }
 
-        /* Hotspot Logic */
         .audio-hotspot {
             position: absolute;
-            width: 80%;
-            left: 10%;
-            height: 2.2%; /* Relative to the total length of the long SVG */
+            left: 18%;          
+            width: 60%;        
+            height: 2.15%;     
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 4px;
             z-index: 10;
+			overflow: hidden;
         }
 
-        /* Positioning: You will need to adjust these % values once 
-           to match the new "Long Version" SVG's visual layout.
-        */
-        .show-1  { top: 18.5%; }
-        .show-2  { top: 25.2%; }
-        .show-3  { top: 31.8%; }
-        /* ... add through show-14 ... */
+        /* ── Manually Calibrated Positions ── */
+        /* These accounts for the non-uniform text lengths in your SVG design */
+        .show-1  { top: 13.4%; }
+        .show-2  { top: 19.4%; }
+        .show-3  { top: 25.6%; }
+        .show-4  { top: 31.5%; } /* Jump due to longer text in Show 4 */
+        .show-5  { top: 37.51%; }
+        .show-6  { top: 43.8%; }
+        .show-7  { top: 49.9%; }
+        .show-8  { top: 56.0%; }
+        .show-9  { top: 62.1%; }
+        .show-10 { top: 68.3%; }
+        .show-11 { top: 74.5%; }
+        .show-12 { top: 80.5%; }
+        .show-13 { top: 86.98%; }
 
         .play-btn {
-            width: 40px; height: 40px;
-            background: #c1ff72; border: 2px solid #106b0b;
-            border-radius: 50%; color: #106b0b;
-            flex-shrink: 0; cursor: pointer;
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #c1ff72;
+            border: 2px solid #106b0b;
+            color: #106b0b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            transition: background 0.15s, transform 0.1s;
+            box-shadow: 0 0 8px rgba(193,255,114,0.4);
         }
+        .play-btn:hover  { background: #d6ff96; transform: scale(1.06); }
+        .play-btn:active { transform: scale(0.94); }
+        .play-btn svg    { width: 14px; height: 14px; }
 
         .waveform-canvas {
-            flex: 1; height: 35px;
+            flex: 1;
+            height: 100%;
+			min-width: 0;
+            display: block;
             cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <div class="page-container">
-        <img src="{% static 'images/long_versionradioshow_oln.svg' %}" class="main-svg" alt="Radio Shows">
+<div class="page-container" id="mainContainer">
 
-        {% for audio in audios %}
-        <div class="audio-hotspot show-{{ forloop.counter }}">
-            <button class="play-btn" onclick="togglePlay(this, 'audio-{{ audio.id }}')">▶</button>
-            <canvas class="waveform-canvas" data-id="{{ audio.id }}"></canvas>
-            <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}" preload="none"></audio>
-        </div>
-        {% endfor %}
+    <img src="{% static 'images/long_versionradioshow_oln.svg' %}" class="main-svg" alt="Radio Shows" id="bgSvg">
+
+    {% for audio in audios %}
+    <div class="audio-hotspot show-{{ forloop.counter }}">
+        <button class="play-btn" data-audio-id="{{ audio.id }}" onclick="togglePlay(this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+
+        <canvas
+            class="waveform-canvas"
+            data-audio-id="{{ audio.id }}"
+            onclick="seekAudio(event, this)">
+        </canvas>
+
+        <audio id="audio-{{ audio.id }}" src="{{ audio.audio_file.url }}" preload="none"></audio>
     </div>
+    {% endfor %}
 
-    <script>
-        // Use a single drawing function to keep the JS light
-        function drawWaveform(canvas, progress = 0) {
-            const ctx = canvas.getContext('2d');
-            const w = canvas.offsetWidth;
-            const h = canvas.offsetHeight;
-            canvas.width = w; canvas.height = h;
+</div>
 
-            const barWidth = 3;
-            const gap = 2;
-            const bars = Math.floor(w / (barWidth + gap));
+<script>
+const ICON_PLAY  = '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+const ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
 
-            ctx.clearRect(0, 0, w, h);
-            for (let i = 0; i < bars; i++) {
-                const x = i * (barWidth + gap);
-                const barH = h * (0.5 + Math.abs(Math.sin(i * 0.2)) * 0.4);
-                const y = (h - barH) / 2;
-                ctx.fillStyle = (i / bars < progress) ? '#c1ff72' : '#106b0b';
-                ctx.fillRect(x, y, barWidth, barH);
-            }
+// ─── Waveform Renderer ───
+function drawWaveform(canvas, progress = 0) {
+    const W = canvas.offsetWidth;
+    const H = canvas.offsetHeight;
+    if (!W || !H) return;
+
+    if (canvas.width !== W || canvas.height !== H) {
+        canvas.width  = W;
+        canvas.height = H;
+    }
+
+    const ctx   = canvas.getContext('2d');
+    const BAR_W = 4;
+    const GAP   = 2;
+    const STEP  = BAR_W + GAP;
+    const bars  = Math.floor(W / STEP);
+    const cx    = H / 2;
+    const r     = BAR_W / 2;
+
+    ctx.clearRect(0, 0, W, H);
+
+    for (let i = 0; i < bars; i++) {
+        const x = i * STEP;
+        const t = i / bars;
+
+        const raw = Math.sin(i * 0.310) * 0.35 + Math.sin(i * 0.173 + 1.20) * 0.27 + Math.sin(i * 0.091 + 0.50) * 0.20;
+        const amp = Math.abs(raw);
+        const envelope = 0.55 + 0.45 * Math.sin(t * Math.PI * 3.0);
+        const barH = Math.max(3, (0.08 + amp * envelope) * (H - 4));
+        const y = cx - barH / 2;
+
+        const grad = ctx.createLinearGradient(x, y, x, y + barH);
+        if (t < progress) {
+            grad.addColorStop(0, 'rgba(193,255,114,0.30)');
+            grad.addColorStop(0.25, '#c1ff72');
+            grad.addColorStop(0.75, '#c1ff72');
+            grad.addColorStop(1, 'rgba(193,255,114,0.30)');
+        } else {
+            grad.addColorStop(0, 'rgba(16,107,11,0.20)');
+            grad.addColorStop(0.25, '#106b0b');
+            grad.addColorStop(0.75, '#106b0b');
+            grad.addColorStop(1, 'rgba(16,107,11,0.20)');
         }
+        
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.roundRect(x, y, BAR_W, barH, r);
+        ctx.fill();
+    }
+}
 
-        function togglePlay(btn, audioId) {
-            const audio = document.getElementById(audioId);
-            const isPaused = audio.paused;
+// ─── Controls ───
+function getProgress(audio) { return audio.duration ? audio.currentTime / audio.duration : 0; }
 
-            // Pause everything else
-            document.querySelectorAll('audio').forEach(a => {
-                a.pause();
-                a.parentElement.querySelector('.play-btn').textContent = '▶';
+function resetAll(exceptAudioId) {
+    document.querySelectorAll('audio').forEach(a => {
+        if (a.id === ('audio-' + exceptAudioId)) return;
+        a.pause();
+        const btn = a.parentElement.querySelector('.play-btn');
+        if (btn) btn.innerHTML = ICON_PLAY;
+    });
+}
+
+function seekAudio(event, canvas) {
+    const audioId = canvas.dataset.audioId;
+    const audio = document.getElementById('audio-' + audioId);
+    if (!audio.duration) return;
+    const ratio = event.offsetX / canvas.offsetWidth;
+    audio.currentTime = ratio * audio.duration;
+    if (audio.paused) drawWaveform(canvas, ratio);
+}
+
+function togglePlay(btn) {
+    const audioId = btn.dataset.audioId;
+    const audio = document.getElementById('audio-' + audioId);
+    const canvas = btn.parentElement.querySelector('.waveform-canvas');
+    resetAll(audioId);
+    if (audio.paused) {
+        audio.play();
+        btn.innerHTML = ICON_PAUSE;
+        raf(audio, canvas);
+    } else {
+        audio.pause();
+        btn.innerHTML = ICON_PLAY;
+    }
+}
+
+function raf(audio, canvas) {
+    if (audio.paused) return;
+    drawWaveform(canvas, getProgress(audio));
+    requestAnimationFrame(() => raf(audio, canvas));
+}
+
+// ─── Initialization ───
+function initAll() {
+    const container = document.getElementById('mainContainer');
+    const bgSvg = document.getElementById('bgSvg');
+
+    const setupWaveforms = () => {
+        document.querySelectorAll('.waveform-canvas').forEach(canvas => {
+            const audioId = canvas.dataset.audioId;
+            const audio = document.getElementById('audio-' + audioId);
+            drawWaveform(canvas, 0);
+            audio.addEventListener('ended', () => {
+                canvas.parentElement.querySelector('.play-btn').innerHTML = ICON_PLAY;
+                drawWaveform(canvas, 1);
             });
+        });
+        // Reveal container once background and waveforms are initialized
+        container.classList.add('loaded');
+    };
 
-            if (isPaused) {
-                audio.play();
-                btn.textContent = '⏸';
-                updateFrame(audio);
-            }
-        }
+    if (bgSvg.complete) {
+        setupWaveforms();
+    } else {
+        bgSvg.addEventListener('load', setupWaveforms);
+    }
+}
 
-        function updateFrame(audio) {
-            if (!audio.paused) {
-                const canvas = audio.parentElement.querySelector('canvas');
-                drawWaveform(canvas, audio.currentTime / audio.duration);
-                requestAnimationFrame(() => updateFrame(audio));
-            }
-        }
+window.addEventListener('resize', () => {
+    document.querySelectorAll('.waveform-canvas').forEach(c => drawWaveform(c, getProgress(document.getElementById('audio-'+c.dataset.audioId))));
+});
 
-        // Init waveforms on load
-        window.onload = () => {
-            document.querySelectorAll('.waveform-canvas').forEach(c => drawWaveform(c, 0));
-        };
-    </script>
+document.addEventListener('DOMContentLoaded', initAll);
+</script>
 </body>
 </html>

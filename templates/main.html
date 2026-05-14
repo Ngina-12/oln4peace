@@ -21,148 +21,150 @@
             overflow-x: hidden;
             color: white;
         }
-        
-        .global-background {
-             position: fixed;
-             top: 0;
-             left: 0;
-             width: 100%;
-             height: 100%;
-             background: linear-gradient(rgba(0,0,0,0.68), rgba(0,0,0,0.68)), 
-                url('{% static "images/Newbackground.png" %}') center/cover no-repeat;
-             z-index: -1;
-             pointer-events: none;
+		
+		body::before {
+          content: '';
+          position: fixed;
+          inset: 0;
+          z-index: -1;
+          background: url('{% static "images/OLN HOMEPAGE.webp" %}') center top / cover no-repeat;
         }
 
-        /* ====================== FIRST SECTION ====================== */
-        .frame1-thq-frame1-elm {
+        /* HERO SECTION */
+        .hero-section {
             min-height: 100vh;
-            padding: 20px 0px;
             position: relative;
-        }
-
-        .header-frame {
-            width: 100%;
-            max-width: 1080px;
-            margin: 20px auto;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .title-image {
-            max-width: 100%;
-            height: auto;
-            object-fit: contain;
-        }
-
-        .media-parent-frame {
-            width: 100%;
-            max-width: 800px;
-            margin: 40px auto 0;
-            padding: 0 20px;
-        }
-
-        .media-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        @media (min-width: 768px) {
-            .media-grid { grid-template-columns: 1fr 1fr; }
-        }
-
-        .frame {
-            padding: 0px;
-            border-radius: 10px;
-            overflow: hidden;
-            aspect-ratio: 16 / 9;
-            background-size: cover;
-            background-position: center;
-        }
-        .frame.left-frame  { background-image: url('{% static "images/image.png" %}'); }
-        .frame.right-frame { background-image: url('{% static "images/youtube.png" %}'); }
-
-        .frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .frame iframe {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* CAROUSEL */
-        .carousel-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-        .carousel-slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            opacity: 0;
-            transition: opacity 1.2s ease-in-out;
-        }
-        .carousel-slide.active {
-            opacity: 1;
-        }
-
-        .chromium-text {
-            font-family: 'Chromium One Std', Impact, sans-serif;
-            color: #D4AF37;
-        }
-
-        .rubik-text {
-            font-family: 'Rubik One', Impact, sans-serif;
-            color: #D4AF37;
-        }
-
-        /* ====================== SECOND SECTION (PORTALS) ====================== */
-        .portal-section {
-            padding: 40px 0 100px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 20px 20px 40px;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 1080px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .media-placeholders {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* UPDATED PLACEHOLDER WITH HOTSPOT SUPPORT */
+        .placeholder-image {
+            position: relative; /* Required for hotspot positioning */
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            width: 1%;
+            margin: 20px auto 0;
+			aspect-ratio: 5 / 4;
+			z-index: 5;
+			margin: 115px auto 0;
+        }
+
+        .placeholder-youtube {
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            width: 78%;
+            margin: -160px auto 0;
+        }
+
+        .placeholder-image img,
+        .placeholder-youtube img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        /* HOTSPOT OVERLAY STYLES */
+        .hotspot-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            z-index: 10;
+        }
+
+        .hotspot {
+            flex: 1;
+            height: 100%;
+            background: rgba(255, 255, 255, 0);
+            transition: background 0.3s;
+        }
+
+        .hotspot:hover {
+            background: rgba(212, 175, 55, 0.1); /* Subtle gold tint on hover */
+        }
+
+        .text-graphic {
+            width: 100%;
+            max-width: 1080px;
+            margin-top: -180px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .text-graphic img {
+            width: 100%;
+            height: auto;
+            display: block;
+			margin-top: -300px;
+			transform: scale(1.35);
+        }
+
+        /* PORTALS SECTION */
+        .portal-section {
+            position: relative;
+            padding: 100px 20px 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
         }
 
         .portal-title-container { 
             text-align: center; 
-            margin-bottom: 40px; 
+            margin-bottom: 50px; 
         }
         
-        .chromium { font-family: 'Chromium One Std'; font-size: 2.8rem; color: #D4AF37; }
-        .rubik { font-family: 'Rubik One'; font-size: 0.9rem; color: #D4AF37; }
+        .chromium { 
+            font-family: 'Chromium One Std'; 
+            font-size: 2.8rem; 
+            color: #D4AF37; 
+        }
+        .rubik { 
+            font-family: 'Rubik One'; 
+            font-size: 0.95rem; 
+            color: #D4AF37; 
+        }
 
         .gem-stack {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
-            gap: 90px; /* Reduced from 90px since we aren't using scale anymore */
-            padding: 0 20px;
+            max-width: 1080px;
+            gap: 90px;
         }
 
         .gem-link {
             display: block;
             width: 100%;
-            /* THIS REPLACES SCALE: Increase this number to make all buttons bigger */
             transform: scale(2.1);
             transition: transform 0.2s ease-in-out;
-            cursor: pointer;
-            z-index: 1;
         }
 
-        /* Subtle hover effect */
         .gem-link:hover {
-            transform: scale(1.04);
-            z-index: 10;
+            transform: scale(2.22);
         }
 
         .gem-link img {
@@ -170,72 +172,49 @@
             height: auto;
             display: block;
             border-radius: 12px;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
         }
 
+        @media (max-width: 768px) {
+            .placeholder-image { width: 72%; }
+            .placeholder-youtube { width: 92%; margin-top: -110px; }
+            .text-graphic { margin-top: -140px; }
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Rubik+One&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="global-background"></div>
 
-    <div class="frame1-thq-frame1-elm">
-        <div class="header-frame">
-            <img src="{% static 'images/titleimage.png' %}" class="title-image" alt="oln4PEACE.org">
-        </div>
-
-        <div class="media-parent-frame">
-            <div class="media-grid">
-                <div class="frame left-frame">
-                    <div class="carousel-container" id="carousel">
-                        <img src="{% static 'images/3.png' %}" class="carousel-slide active" alt="slide1">
-                        <img src="{% static 'images/1.png' %}" class="carousel-slide" alt="slide2">
-                        <img src="{% static 'images/9.png' %}" class="carousel-slide" alt="slide3">
-                        <img src="{% static 'images/7.png' %}" class="carousel-slide" alt="slide4">
-                        <img src="{% static 'images/6.png' %}" class="carousel-slide" alt="slide5">
-                        <img src="{% static 'images/5.png' %}" class="carousel-slide" alt="slide6">
-                        <img src="{% static 'images/8.png' %}" class="carousel-slide" alt="slide7">
-                        <img src="{% static 'images/2.png' %}" class="carousel-slide" alt="slide8">
+    <div class="hero-section">
+        <div class="content-wrapper">
+            <div class="media-placeholders">
+                <div class="placeholder-image">
+                    
+                    <div class="hotspot-overlay">
+                        <div class="hotspot" onmouseenter="updateHotspot(0)"></div>
+                        <div class="hotspot" onmouseenter="updateHotspot(1)"></div>
+                        <div class="hotspot" onmouseenter="updateHotspot(2)"></div>
+                        <div class="hotspot" onmouseenter="updateHotspot(3)"></div>
+                        <div class="hotspot" onmouseenter="updateHotspot(4)"></div>
+                        <div class="hotspot" onmouseenter="updateHotspot(5)"></div>
+                        <div class="hotspot" onmouseenter="updateHotspot(6)"></div>
+                        <div class="hotspot" onmouseenter="updateHotspot(7)"></div>
                     </div>
                 </div>
 
-                <div class="frame right-frame" onclick="window.open('https://youtu.be/DKffexpK348', '_blank')">
-                    <iframe src="https://www.youtube.com/embed/DKffexpK348?autoplay=1&mute=1&playsinline=1&start=0&end=30&controls=0&modestbranding=1&rel=0" 
-                    frameborder="0" allowfullscreen></iframe>
+                <div class="placeholder-youtube" onclick="window.open('https://youtu.be/DKffexpK348', '_blank')">
                 </div>
             </div>
-        </div>
 
-        <div style="max-width:1080px;margin:40px auto;padding:0 20px;text-align:center;line-height:1.45;">
-            <span class="chromium-text" style="font-size:2.4rem;display:block;margin-bottom: 0px;">CONGRATULATIONS</span>
-            <span class="rubik-text" style="font-size:1rem;margin: -15px 0 0;">on navigating your way to our homepage.</span><br><br>
-            <span class="rubik-text" style="font-size:0.9rem; display: block; margin-bottom: 0px;">The</span>
-            <span class="chromium-text" style="font-size:2.1rem; display: block; margin: -4px 0 -4px;">DIVINE MAGIC DUO</span>
-            <span class="rubik-text" style="font-size:0.90rem; display: block; margin: -5px 0 40px;">wholeheartedly welcome you into our world.</span>            
-            <span class="chromium-text" style="font-size:2.0rem; display: inline;margin:5px 0 -5px; margin-left:-5px;">LISTEN </span>
-            <span class="rubik-text" style="font-size:1.00rem; margin-left: -3px;margin-bottom: -2px;">at your leisure to the entire</span>
-            <span class="chromium-text" style="font-size:1.5rem; display: block; margin: -10px 0 -7px;">Season one<br></span>
-            <span class="rubik-text" style="font-size:0.9rem;">of</br></span>
-            <span class="rubik-text" style="font-size:1.2rem;">The Adventures of One Love Nation</span>
-            <span class="chromium-text" style="font-size:2.1rem; display: block; margin: -10px 0 -1px;">RADIO SHOW</span>
-            <span class="rubik-text" style="font-size:0.9rem; margin:-25px 0 25px;">(as aired globally in 2024 on Radio Illumini)</span>
-            <span class="rubik-text" style="font-size:1.0rem; margin: 40px 0 0px; display: block;">The Mav has promised<br>a 10 book series...</br></span>
-            <span class="chromium-text" style="font-size:2.5rem; display: block;margin: 0px -3px -5px;margin-left:-20px;">OUT NOW</span>
-            <span class="rubik-text" style="font-size:1.15rem; display: inline;margin: 20px 0 -5px;margin-left:25px;inline; vertical-align: middle;">The</span>
-            <span class="chromium-text" style="font-size:2.8rem; margin-left: 4px; margin-right: -5px;margin:0 2px 0;vertical-align: middle;">DEEP SHIFT</span>
-            <span class="rubik-text" style="font-size:1.15rem;inline; vertical-align: middle;margin-left:-5px;">Trilogy<br></span>
-
-            <span class="rubik-text" style="font-size:1.0rem; margin-top: 10px; display: inline;">We are delighted to share our</span> 
-            <span class="chromium-text" style="font-size:1.8rem;">FREE</span>
-            <span class="chromium-text" style="font-size:1.9rem; display: block;">COMPANION WORKBOOKS</span>
-            <span class="rubik-text" style="font-size: 0.9rem; display: inline;margin-top: -10px;">to assist the reader deepening into one </span> 
-            <span class="chromium-text" style="font-size:1.7rem;">SELF</span>
+            <div class="text-graphic">
+            </div>
         </div>
     </div>
 
     <div class="portal-section">
         <div class="portal-title-container">
-            <span class="chromium">EXPLORE</span> <span class="rubik">our</span> <span class="chromium">PORTALS</span><br>
+            <span class="chromium">EXPLORE</span> 
+            <span class="rubik">our</span> 
+            <span class="chromium">PORTALS</span><br>
             <span class="rubik">within the portal</span>
         </div>
 
@@ -277,31 +256,71 @@
     </div>
 
     <script>
-        // CAROUSEL LOGIC
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.carousel-slide');
-        function showNextSlide() {
-            if(slides.length === 0) return;
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }
-        setInterval(showNextSlide, 3000);
+        // HOTSPOT LOGIC
+        const hotspotImages = [
+            "{% static 'images/image.webp' %}",
+            "{% static 'images/1.png' %}",
+            "{% static 'images/9.png' %}",
+            "{% static 'images/7.png' %}",
+            "{% static 'images/6.png' %}",
+            "{% static 'images/5.png' %}",
+            "{% static 'images/8.png' %}",
+            "{% static 'images/2.png' %}"
+        ];
 
-        // SCROLL RESTORATION
-        window.addEventListener('beforeunload', () => {
-            sessionStorage.setItem('scrollPosition', window.scrollY);
-        });
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
-                const saved = sessionStorage.getItem('scrollPosition');
-                if (saved) {
-                    setTimeout(() => {
-                        window.scrollTo(0, parseInt(saved));
-                    }, 10);
-                }
+        function updateHotspot(index) {
+            const display = document.getElementById('hotspot-display');
+            if (hotspotImages[index]) {
+                display.src = hotspotImages[index];
             }
-        });
+        }
+
+        // CAROUSEL MODAL LOGIC
+        function showCarousel() {
+            const carouselHTML = `
+                <div style="position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9999;display:flex;align-items:center;justify-content:center;" onclick="this.remove()">
+                    <div style="max-width:92%;max-height:92vh;position:relative;" onclick="event.stopImmediatePropagation()">
+                        <button onclick="this.closest('div[style*=\'inset:0\']').remove()" 
+                                style="position:absolute;top:-55px;right:10px;color:white;font-size:2.5rem;background:none;border:none;cursor:pointer;z-index:1000;">✕</button>
+                        
+                        <div style="position:relative;">
+                            <img src="${hotspotImages[0]}" class="modal-slide active" style="width:100%;border-radius:12px;">
+                            <img src="${hotspotImages[1]}" class="modal-slide" style="width:100%;border-radius:12px;display:none;">
+                            <img src="${hotspotImages[2]}" class="modal-slide" style="width:100%;border-radius:12px;display:none;">
+                            <img src="${hotspotImages[3]}" class="modal-slide" style="width:100%;border-radius:12px;display:none;">
+                            <img src="${hotspotImages[4]}" class="modal-slide" style="width:100%;border-radius:12px;display:none;">
+                            <img src="${hotspotImages[5]}" class="modal-slide" style="width:100%;border-radius:12px;display:none;">
+                            <img src="${hotspotImages[6]}" class="modal-slide" style="width:100%;border-radius:12px;display:none;">
+                            <img src="${hotspotImages[7]}" class="modal-slide" style="width:100%;border-radius:12px;display:none;">
+                        </div>
+                        
+                        <div style="text-align:center;margin-top:25px;color:#D4AF37;font-size:1.8rem;">
+                            <button onclick="prevSlide()" style="margin:0 20px;">←</button>
+                            <button onclick="nextSlide()" style="margin:0 20px;">→</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modal = document.createElement('div');
+            modal.innerHTML = carouselHTML;
+            document.body.appendChild(modal);
+            window.currentModalSlide = 0;
+        }
+
+        function nextSlide() {
+            const slides = document.querySelectorAll('.modal-slide');
+            slides[window.currentModalSlide].style.display = 'none';
+            window.currentModalSlide = (window.currentModalSlide + 1) % slides.length;
+            slides[window.currentModalSlide].style.display = 'block';
+        }
+
+        function prevSlide() {
+            const slides = document.querySelectorAll('.modal-slide');
+            slides[window.currentModalSlide].style.display = 'none';
+            window.currentModalSlide = (window.currentModalSlide - 1 + slides.length) % slides.length;
+            slides[window.currentModalSlide].style.display = 'block';
+        }
     </script>
 </body>
 </html>
